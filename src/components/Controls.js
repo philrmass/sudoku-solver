@@ -1,8 +1,12 @@
 import React from 'react';
 
+import styles from '../styles/Controls.module.css';
+
 function Controls() {
   return (
-    <div>CONTROLS</div>
+    <main className={styles.main}>
+      CONTROLS
+    </main>
   );
 }
 

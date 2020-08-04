@@ -1,0 +1,5 @@
+.main {
+  padding: var(--space1) 0 var(--space2);
+  display: flex;
+  justify-content: space-between;
+}
