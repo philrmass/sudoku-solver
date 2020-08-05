@@ -6,7 +6,6 @@ import store from './redux/store';
 import './styles/normalize.css';
 import './styles/index.css';
 import App from './components/App';
-import puzzlesTxt from './data/puzzles.txt';
 
 ReactDOM.render(
   <Provider store={store}>
@@ -14,5 +13,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('app'),
 );
-
-console.log('#### PUZZLES ####\n', puzzlesTxt);

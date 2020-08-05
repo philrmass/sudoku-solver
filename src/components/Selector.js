@@ -1,14 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import styles from '../styles/Selector.module.css';
 
-function Selector() {
+function Selector({
+  puzzles,
+  index,
+}) {
   return (
     <main className={styles.main}>
       <button>
         {'<--'}
       </button>
-      BOARD NAME
+      {puzzles[index].name}
       <button>
         {'-->'}
       </button>
@@ -16,4 +21,14 @@ function Selector() {
   );
 }
 
-export default Selector;
+Selector.propTypes = {
+  puzzles: PropTypes.arrayOf(PropTypes.object).isRequired,
+  index: PropTypes.number.isRequired,
+};
+
+const mapState = (state) => ({
+  puzzles: state.board.puzzles,
+  index: state.board.index,
+});
+
+export default connect(mapState)(Selector);

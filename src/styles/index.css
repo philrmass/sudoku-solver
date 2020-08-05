@@ -2,9 +2,10 @@
   --space0: 4px;
   --space1: 8px;
   --space2: 16px;
-  --text-black: #202020;
-  --text-blue: #2020d8;
+  --text-black: #181818;
+  --text-blue: #6060d8;
   --light-gray: #f4f4f4;
+  --cell-size: 65px;
 }
 
 * {
