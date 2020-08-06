@@ -6,6 +6,8 @@
   --text-blue: #6060d8;
   --light-gray: #f4f4f4;
   --cell-size: 65px;
+  --done-size: calc(.55 * var(--cell-size));
+  --possible-size: calc(.35 * var(--done-size));
 }
 
 * {

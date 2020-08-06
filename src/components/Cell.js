@@ -18,17 +18,21 @@ function Cell({
 
   function buildSolution(value) {
     return (
-      <div className={styles.solution}>
+      <div className={styles.done}>
         {value}
       </div>
     );
   }
 
   function buildPossibles(values) {
-    //??? reduce values, adding ''
+    const all = values.reduce((all, value) => {
+      const gap = value - all.length - 1;
+      const blanks = Array.from({ length: gap }, () => '');
+      return [...all, ...blanks, value];
+    }, []);
     return (
       <div className={styles.possibles}>
-        {values.map((value, index) => (
+        {all.map((value, index) => (
           <div key={index} className={styles.possible}>
             {value}
           </div>

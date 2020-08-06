@@ -7,8 +7,8 @@
   align-items: center;
 }
 
-.solution {
-  font-size: 36px;
+.done {
+  font-size: var(--done-size);
 }
 
 .possibles {
@@ -17,7 +17,7 @@
   padding: var(--space0);
   color: var(--text-blue);
   font-family: monospace;
-  font-size: 14px;
+  font-size: var(--possible-size);
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
