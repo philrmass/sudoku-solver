@@ -2,13 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { removeAllRowPossibles } from '../redux/board/actions';
+import {
+  removeRowPossibles,
+  removeColumnPossibles,
+  removeBoxPossibles,
+} from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
 
 function Controls({
   board,
+  removeRowPossibles,
+  removeColumnPossibles,
+  removeBoxPossibles,
 }) {
-  console.log('B0', board[0].length);
+  console.log(`b(${board[0].length})`);
   return (
     <main className={styles.main}>
       <section>
@@ -17,14 +24,18 @@ function Controls({
         </div>
         <div>
           <button
-            onClick={removeAllRowPossibles} 
+            onClick={() => removeRowPossibles()}
           >
             Row
           </button>
-          <button>
+          <button
+            onClick={() => removeColumnPossibles()}
+          >
             Column
           </button>
-          <button>
+          <button
+            onClick={() => removeBoxPossibles()}
+          >
             Box
           </button>
           <button>
@@ -38,6 +49,9 @@ function Controls({
 
 Controls.propTypes = {
   board: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+  removeRowPossibles: PropTypes.func.isRequired,
+  removeColumnPossibles: PropTypes.func.isRequired,
+  removeBoxPossibles: PropTypes.func.isRequired,
 };
 
 const mapState = (state) => ({
@@ -45,7 +59,9 @@ const mapState = (state) => ({
 });
 
 const mapDispatch = {
-  removeAllRowPossibles,
+  removeRowPossibles,
+  removeColumnPossibles,
+  removeBoxPossibles,
 };
 
 export default connect(mapState, mapDispatch)(Controls);

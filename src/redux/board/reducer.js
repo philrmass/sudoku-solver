@@ -1,9 +1,15 @@
 import puzzlesStr from '../../data/puzzles.txt';
-import { removeRowPossibles } from '../../utilities/board';
+import {
+  removeRowPossibles,
+  removeColumnPossibles,
+  removeBoxPossibles,
+} from '../../utilities/board';
 import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
 
 import {
   REMOVE_ROW_POSSIBLES,
+  REMOVE_COLUMN_POSSIBLES,
+  REMOVE_BOX_POSSIBLES,
 } from './actions';
 
 const puzzles = parsePuzzles(puzzlesStr);
@@ -16,14 +22,22 @@ const defaultState = {
 };
 
 export default function boardReducer(state = defaultState, action) {
-  console.log('ACT', action);
   switch(action.type) {
-    case REMOVE_ROW_POSSIBLES: {
+    case REMOVE_ROW_POSSIBLES:
       return {
         ...state,
-        current: removeRowPossibles(0, state.current),
+        current: removeRowPossibles(state.current),
       };
-    }
+    case REMOVE_COLUMN_POSSIBLES:
+      return {
+        ...state,
+        current: removeColumnPossibles(state.current),
+      };
+    case REMOVE_BOX_POSSIBLES:
+      return {
+        ...state,
+        current: removeBoxPossibles(state.current),
+      };
     default:
       return state;
   }
