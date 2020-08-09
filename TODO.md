@@ -1,4 +1,5 @@
 # Tasks
+- Rename All to Each, Board to All
 - Add actives for numbers removed or newly done
 - Display actives in red for 2 seconds
 - Addd hasRowPossibles (x5), use for !disabled of buttons
