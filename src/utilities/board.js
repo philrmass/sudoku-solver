@@ -12,6 +12,17 @@ export function removeBoxPossibles(board) {
   return removePossibles(boxIndices, board);
 }
 
+export function removeAllPossibles(board) {
+  const rowFiltered = removePossibles(rowIndices, board);
+  const columnFiltered = removePossibles(columnIndices, rowFiltered);
+  return removePossibles(boxIndices, columnFiltered);
+}
+
+export function removeBoardPossibles(board) {
+  console.log('BOARD');
+  return [...board];
+}
+
 export function removePossibles(sectionIndices, inBoard) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
   const sections = indices.map((index) => {

@@ -6,16 +6,18 @@ import {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeAllPossibles,
+  removeBoardPossibles,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
 
 function Controls({
-  board,
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeAllPossibles,
+  removeBoardPossibles,
 }) {
-  console.log(`b(${board[0].length})`);
   return (
     <main className={styles.main}>
       <section>
@@ -38,8 +40,15 @@ function Controls({
           >
             Box
           </button>
-          <button>
+          <button
+            onClick={() => removeAllPossibles()}
+          >
             All
+          </button>
+          <button
+            onClick={() => removeBoardPossibles()}
+          >
+            Repeat All
           </button>
         </div>
       </section>
@@ -48,20 +57,19 @@ function Controls({
 }
 
 Controls.propTypes = {
-  board: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
   removeRowPossibles: PropTypes.func.isRequired,
   removeColumnPossibles: PropTypes.func.isRequired,
   removeBoxPossibles: PropTypes.func.isRequired,
+  removeAllPossibles: PropTypes.func.isRequired,
+  removeBoardPossibles: PropTypes.func.isRequired,
 };
-
-const mapState = (state) => ({
-  board: state.board.current,
-});
 
 const mapDispatch = {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeAllPossibles,
+  removeBoardPossibles,
 };
 
-export default connect(mapState, mapDispatch)(Controls);
+export default connect(null, mapDispatch)(Controls);
