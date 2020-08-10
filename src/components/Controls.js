@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -8,16 +8,26 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  clearActives,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
 
 function Controls({
+  actives,
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  clearActives,
 }) {
+  useEffect(() => {
+    if (actives) {
+      const timeout = setTimeout(clearActives, 700);
+      return () => clearTimeout(timeout);
+    }
+  }, [actives]);
+
   return (
     <main className={styles.main}>
       <section>
@@ -57,12 +67,18 @@ function Controls({
 }
 
 Controls.propTypes = {
+  actives: PropTypes.array,
   removeRowPossibles: PropTypes.func.isRequired,
   removeColumnPossibles: PropTypes.func.isRequired,
   removeBoxPossibles: PropTypes.func.isRequired,
   removeEachPossibles: PropTypes.func.isRequired,
   removeAllPossibles: PropTypes.func.isRequired,
+  clearActives: PropTypes.func.isRequired,
 };
+
+const mapState = (state) => ({
+  actives: state.board.actives,
+});
 
 const mapDispatch = {
   removeRowPossibles,
@@ -70,6 +86,7 @@ const mapDispatch = {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  clearActives,
 };
 
-export default connect(null, mapDispatch)(Controls);
+export default connect(mapState, mapDispatch)(Controls);

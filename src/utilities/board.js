@@ -47,7 +47,6 @@ function getNoPossiblesSection(index, sectionIndices, board) {
     return dones;
   }, []);
 
-  //??? add actives
   return cells.map((cell) => ({
     ...cell,
     values: removeDones(cell.values, dones),
@@ -61,6 +60,15 @@ function removeDones(values, dones) {
   return values;
 }
 
-export function getActives(oldBoard, newBoard) {
-  console.log('ACTIVES', oldBoard, newBoard);
+export function getActives(lastBoard, board) {
+  return board.map((cell, index) => {
+    const lastCell = lastBoard[index];
+    if (lastCell.length > cell.length) {
+      if (cell.length === 1) {
+        return cell;
+      }
+      return lastCell.filter((value) => !cell.includes(value));
+    }
+    return [];
+  });
 }

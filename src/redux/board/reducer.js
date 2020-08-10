@@ -5,6 +5,7 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  getActives,
 } from '../../utilities/board';
 import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
 
@@ -14,6 +15,7 @@ import {
   REMOVE_BOX_POSSIBLES,
   REMOVE_EACH_POSSIBLES,
   REMOVE_ALL_POSSIBLES,
+  CLEAR_ACTIVES,
 } from './actions';
 
 const puzzles = parsePuzzles(puzzlesStr);
@@ -23,13 +25,14 @@ const defaultState = {
   puzzles,
   index,
   current: getPuzzleBoard(puzzles[index]),
+  actives: null,
 };
 
 export default function boardReducer(state = defaultState, action) {
   switch(action.type) {
     case REMOVE_ROW_POSSIBLES: {
       const board = removeRowPossibles(state.current);
-      const actives = [];
+      const actives = getActives(state.current, board);
       return {
         ...state,
         current: board,
@@ -38,7 +41,7 @@ export default function boardReducer(state = defaultState, action) {
     }
     case REMOVE_COLUMN_POSSIBLES: {
       const board = removeColumnPossibles(state.current);
-      const actives = [];
+      const actives = getActives(state.current, board);
       return {
         ...state,
         current: board,
@@ -47,7 +50,7 @@ export default function boardReducer(state = defaultState, action) {
     }
     case REMOVE_BOX_POSSIBLES: {
       const board = removeBoxPossibles(state.current);
-      const actives = [];
+      const actives = getActives(state.current, board);
       return {
         ...state,
         current: board,
@@ -56,7 +59,7 @@ export default function boardReducer(state = defaultState, action) {
     }
     case REMOVE_EACH_POSSIBLES: {
       const board = removeEachPossibles(state.current);
-      const actives = [];
+      const actives = getActives(state.current, board);
       return {
         ...state,
         current: board,
@@ -65,13 +68,18 @@ export default function boardReducer(state = defaultState, action) {
     }
     case REMOVE_ALL_POSSIBLES: {
       const board = removeAllPossibles(state.current);
-      const actives = [];
+      const actives = getActives(state.current, board);
       return {
         ...state,
         current: board,
         actives,
       };
     }
+    case CLEAR_ACTIVES:
+      return {
+        ...state,
+        actives: null,
+      };
     default:
       return state;
   }

@@ -4,6 +4,7 @@
   --space2: 16px;
   --text-black: #181818;
   --text-blue: #6060d8;
+  --text-red: #e82828;
   --light-gray: #f4f4f4;
   --cell-size: 65px;
   --done-size: calc(.55 * var(--cell-size));

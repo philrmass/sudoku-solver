@@ -3,6 +3,7 @@ export const REMOVE_COLUMN_POSSIBLES = 'REMOVE_COLUMN_POSSIBLES';
 export const REMOVE_BOX_POSSIBLES = 'REMOVE_BOX_POSSIBLES';
 export const REMOVE_EACH_POSSIBLES = 'REMOVE_EACH_POSSIBLES';
 export const REMOVE_ALL_POSSIBLES = 'REMOVE_ALL_POSSIBLES';
+export const CLEAR_ACTIVES = 'CLEAR_ACTIVES';
 
 export function removeRowPossibles() {
   return { type: REMOVE_ROW_POSSIBLES };
@@ -22,4 +23,8 @@ export function removeEachPossibles() {
 
 export function removeAllPossibles() {
   return { type: REMOVE_ALL_POSSIBLES };
+}
+
+export function clearActives() {
+  return { type: CLEAR_ACTIVES};
 }
