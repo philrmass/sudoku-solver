@@ -6,8 +6,8 @@ import {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeEachPossibles,
   removeAllPossibles,
-  removeBoardPossibles,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
 
@@ -15,8 +15,8 @@ function Controls({
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeEachPossibles,
   removeAllPossibles,
-  removeBoardPossibles,
 }) {
   return (
     <main className={styles.main}>
@@ -41,14 +41,14 @@ function Controls({
             Box
           </button>
           <button
+            onClick={() => removeEachPossibles()}
+          >
+            Each
+          </button>
+          <button
             onClick={() => removeAllPossibles()}
           >
             All
-          </button>
-          <button
-            onClick={() => removeBoardPossibles()}
-          >
-            Repeat All
           </button>
         </div>
       </section>
@@ -60,16 +60,16 @@ Controls.propTypes = {
   removeRowPossibles: PropTypes.func.isRequired,
   removeColumnPossibles: PropTypes.func.isRequired,
   removeBoxPossibles: PropTypes.func.isRequired,
+  removeEachPossibles: PropTypes.func.isRequired,
   removeAllPossibles: PropTypes.func.isRequired,
-  removeBoardPossibles: PropTypes.func.isRequired,
 };
 
 const mapDispatch = {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeEachPossibles,
   removeAllPossibles,
-  removeBoardPossibles,
 };
 
 export default connect(null, mapDispatch)(Controls);

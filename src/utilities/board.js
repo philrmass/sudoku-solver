@@ -12,14 +12,14 @@ export function removeBoxPossibles(board) {
   return removePossibles(boxIndices, board);
 }
 
-export function removeAllPossibles(board) {
+export function removeEachPossibles(board) {
   const rowFiltered = removePossibles(rowIndices, board);
   const columnFiltered = removePossibles(columnIndices, rowFiltered);
   return removePossibles(boxIndices, columnFiltered);
 }
 
-export function removeBoardPossibles(board) {
-  console.log('BOARD');
+export function removeAllPossibles(board) {
+  console.log('ALL');
   return [...board];
 }
 
@@ -30,9 +30,7 @@ export function removePossibles(sectionIndices, inBoard) {
   }).flat();
 
   const sorted = sections.sort((a, b) => a.index - b.index);
-  const board = sorted.map((section) => section.values);
-
-  return board;
+  return sorted.map((section) => section.values);
 }
 
 function getNoPossiblesSection(index, sectionIndices, board) {
@@ -61,4 +59,8 @@ function removeDones(values, dones) {
     return values.filter((value) => !dones.includes(value));
   }
   return values;
+}
+
+export function getActives(oldBoard, newBoard) {
+  console.log('ACTIVES', oldBoard, newBoard);
 }

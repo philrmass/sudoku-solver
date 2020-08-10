@@ -3,8 +3,8 @@ import {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
+  removeEachPossibles,
   removeAllPossibles,
-  removeBoardPossibles,
 } from '../../utilities/board';
 import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
 
@@ -12,8 +12,8 @@ import {
   REMOVE_ROW_POSSIBLES,
   REMOVE_COLUMN_POSSIBLES,
   REMOVE_BOX_POSSIBLES,
+  REMOVE_EACH_POSSIBLES,
   REMOVE_ALL_POSSIBLES,
-  REMOVE_BOARD_POSSIBLES,
 } from './actions';
 
 const puzzles = parsePuzzles(puzzlesStr);
@@ -27,31 +27,51 @@ const defaultState = {
 
 export default function boardReducer(state = defaultState, action) {
   switch(action.type) {
-    case REMOVE_ROW_POSSIBLES:
+    case REMOVE_ROW_POSSIBLES: {
+      const board = removeRowPossibles(state.current);
+      const actives = [];
       return {
         ...state,
-        current: removeRowPossibles(state.current),
+        current: board,
+        actives,
       };
-    case REMOVE_COLUMN_POSSIBLES:
+    }
+    case REMOVE_COLUMN_POSSIBLES: {
+      const board = removeColumnPossibles(state.current);
+      const actives = [];
       return {
         ...state,
-        current: removeColumnPossibles(state.current),
+        current: board,
+        actives,
       };
-    case REMOVE_BOX_POSSIBLES:
+    }
+    case REMOVE_BOX_POSSIBLES: {
+      const board = removeBoxPossibles(state.current);
+      const actives = [];
       return {
         ...state,
-        current: removeBoxPossibles(state.current),
+        current: board,
+        actives,
       };
-    case REMOVE_ALL_POSSIBLES:
+    }
+    case REMOVE_EACH_POSSIBLES: {
+      const board = removeEachPossibles(state.current);
+      const actives = [];
       return {
         ...state,
-        current: removeAllPossibles(state.current),
+        current: board,
+        actives,
       };
-    case REMOVE_BOARD_POSSIBLES:
+    }
+    case REMOVE_ALL_POSSIBLES: {
+      const board = removeAllPossibles(state.current);
+      const actives = [];
       return {
         ...state,
-        current: removeBoardPossibles(state.current),
+        current: board,
+        actives,
       };
+    }
     default:
       return state;
   }
