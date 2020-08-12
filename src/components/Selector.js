@@ -10,11 +10,11 @@ function Selector({
 }) {
   return (
     <main className={styles.main}>
-      <button>
+      <button className={styles.button}>
         {'<--'}
       </button>
       {puzzles[index].name}
-      <button>
+      <button className={styles.button}>
         {'-->'}
       </button>
     </main>

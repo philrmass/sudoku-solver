@@ -1,3 +1,12 @@
 .main {
   padding-top: var(--space2);
 }
+
+.title {
+  padding-bottom: var(--space1);
+}
+
+button {
+  margin-right: var(--space0);
+  border-radius: var(--radius);
+}

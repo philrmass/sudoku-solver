@@ -12,7 +12,15 @@ import {
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
 
+import {
+  hasRowPossibles,
+  hasColumnPossibles,
+  hasBoxPossibles,
+  hasAnyPossibles,
+} from '../utilities/board';
+
 function Controls({
+  board,
   actives,
   removeRowPossibles,
   removeColumnPossibles,
@@ -30,32 +38,37 @@ function Controls({
 
   return (
     <main className={styles.main}>
-      <section>
+      <section className={styles.section}>
         <div className={styles.title}>
           Remove Possibles
         </div>
-        <div>
+        <div className={styles.buttons}>
           <button
+            disabled={!hasRowPossibles(board)}
             onClick={() => removeRowPossibles()}
           >
             Row
           </button>
           <button
+            disabled={!hasColumnPossibles(board)}
             onClick={() => removeColumnPossibles()}
           >
             Column
           </button>
           <button
+            disabled={!hasBoxPossibles(board)}
             onClick={() => removeBoxPossibles()}
           >
             Box
           </button>
           <button
+            disabled={!hasAnyPossibles(board)}
             onClick={() => removeEachPossibles()}
           >
             Each
           </button>
           <button
+            disabled={!hasAnyPossibles(board)}
             onClick={() => removeAllPossibles()}
           >
             All
@@ -67,6 +80,7 @@ function Controls({
 }
 
 Controls.propTypes = {
+  board: PropTypes.array.isRequired,
   actives: PropTypes.array,
   removeRowPossibles: PropTypes.func.isRequired,
   removeColumnPossibles: PropTypes.func.isRequired,
@@ -77,6 +91,7 @@ Controls.propTypes = {
 };
 
 const mapState = (state) => ({
+  board: state.board.current,
   actives: state.board.actives,
 });
 

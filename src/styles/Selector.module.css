@@ -2,4 +2,9 @@
   padding: var(--space1) 0 var(--space2);
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  font-family: monospace;
 }

@@ -1,5 +1,44 @@
 import { rowIndices, columnIndices, boxIndices } from '../data/indices';
 
+export function hasRowPossibles(board) {
+  return hasPossibles(rowIndices, board);
+}
+
+export function hasColumnPossibles(board) {
+  return hasPossibles(columnIndices, board);
+}
+
+export function hasBoxPossibles(board) {
+  return hasPossibles(boxIndices, board);
+}
+
+export function hasAnyPossibles(board) {
+  return hasRowPossibles(board) ||
+    hasColumnPossibles(board) ||
+    hasBoxPossibles(board);
+}
+
+function hasPossibles(sectionIndices, board) {
+  const indices = Array.from({ length: 9 }, (_, index) => index);
+  return indices.some((index) => {
+    const indices = sectionIndices[index];
+    return hasSectionPossibles(indices, board);
+  });
+}
+
+function hasSectionPossibles(indices, board) {
+  const cells = getCells(indices, board);
+  const dones = getDones(cells);
+  return cells.some((cell) => hasCellPossibles(cell, dones));
+}
+
+function hasCellPossibles(cell, dones) {
+  if (cell.values.length > 1) {
+    return cell.values.some((value) => dones.includes(value));
+  }
+  return false;
+}
+
 export function removeRowPossibles(board) {
   return removePossibles(rowIndices, board);
 }
@@ -19,8 +58,13 @@ export function removeEachPossibles(board) {
 }
 
 export function removeAllPossibles(board) {
-  console.log('ALL');
-  return [...board];
+  let removed = board;
+  while (hasAnyPossibles(removed)) {
+    const noRows = removeRowPossibles(removed);
+    const noColumns = removeColumnPossibles(noRows);
+    removed = removeBoxPossibles(noColumns);
+  }
+  return removed;
 }
 
 export function removePossibles(sectionIndices, inBoard) {
@@ -35,22 +79,29 @@ export function removePossibles(sectionIndices, inBoard) {
 
 function getNoPossiblesSection(index, sectionIndices, board) {
   const indices = sectionIndices[index];
-  const cells = indices.map((index) => ({
-    index,
-    values: board[index],
-  }));
-
-  const dones = cells.reduce((dones, cell) => {
-    if (cell.values.length === 1) {
-      return [...dones, cell.values[0]];
-    }
-    return dones;
-  }, []);
+  const cells = getCells(indices, board);
+  const dones = getDones(cells);
 
   return cells.map((cell) => ({
     ...cell,
     values: removeDones(cell.values, dones),
   }));
+}
+
+function getCells(indices, board) {
+  return indices.map((index) => ({
+    index,
+    values: board[index],
+  }));
+}
+
+function getDones(cells) {
+  return cells.reduce((dones, cell) => {
+    if (cell.values.length === 1) {
+      return [...dones, cell.values[0]];
+    }
+    return dones;
+  }, []);
 }
 
 function removeDones(values, dones) {
