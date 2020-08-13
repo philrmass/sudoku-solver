@@ -10,7 +10,7 @@ import {
 import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
 
 import {
-  SELECT_BOARD,
+  SET_BOARD,
   REMOVE_ROW_POSSIBLES,
   REMOVE_COLUMN_POSSIBLES,
   REMOVE_BOX_POSSIBLES,
@@ -19,28 +19,19 @@ import {
   CLEAR_ACTIVES,
 } from './actions';
 
+//???? remove puzzles
 const puzzles = parsePuzzles(puzzlesStr);
-const index = 0;
-
 const defaultState = {
-  puzzles,
-  index,
-  current: getPuzzleBoard(puzzles[index]),
+  current: getPuzzleBoard(puzzles[0]),
   actives: null,
 };
 
 export default function boardReducer(state = defaultState, action) {
   switch(action.type) {
-    case SELECT_BOARD: {
-      let index = state.index;
-      if (action.index >= 0 && action.index < state.puzzles.length) {
-        index = action.index;
-      }
-
+    case SET_BOARD: {
       return {
         ...state,
-        index,
-        current: getPuzzleBoard(state.puzzles[index]),
+        current: action.board,
       };
     }
     case REMOVE_ROW_POSSIBLES: {
