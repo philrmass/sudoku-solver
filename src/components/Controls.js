@@ -8,7 +8,7 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setUniques,
+  setAllUniques,
   clearActives,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
@@ -28,7 +28,7 @@ function Controls({
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setUniques,
+  setAllUniques,
   clearActives,
 }) {
   useEffect(() => {
@@ -88,8 +88,8 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!hasRowPossibles(board)}
-            onClick={() => setUniques()}
+            disabled={!true}
+            onClick={() => setAllUniques()}
           >
             All
           </button>
@@ -114,7 +114,7 @@ Controls.propTypes = {
   removeBoxPossibles: PropTypes.func.isRequired,
   removeEachPossibles: PropTypes.func.isRequired,
   removeAllPossibles: PropTypes.func.isRequired,
-  setUniques: PropTypes.func.isRequired,
+  setAllUniques: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
 };
 
@@ -129,7 +129,7 @@ const mapDispatch = {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setUniques,
+  setAllUniques,
   clearActives,
 };
 

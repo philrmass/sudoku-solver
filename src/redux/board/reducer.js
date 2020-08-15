@@ -5,6 +5,7 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  setAllUniques,
   getActives,
 } from '../../utilities/board';
 import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
@@ -16,6 +17,7 @@ import {
   REMOVE_BOX_POSSIBLES,
   REMOVE_EACH_POSSIBLES,
   REMOVE_ALL_POSSIBLES,
+  SET_ALL_UNIQUES,
   CLEAR_ACTIVES,
 } from './actions';
 
@@ -72,6 +74,15 @@ export default function boardReducer(state = defaultState, action) {
     }
     case REMOVE_ALL_POSSIBLES: {
       const board = removeAllPossibles(state.current);
+      const actives = getActives(state.current, board);
+      return {
+        ...state,
+        current: board,
+        actives,
+      };
+    }
+    case SET_ALL_UNIQUES: {
+      const board = setAllUniques(state.current);
       const actives = getActives(state.current, board);
       return {
         ...state,

@@ -1,4 +1,5 @@
 # Tasks
+- add has uniques, disable button
 - set puzzle at startup in redux/store.js
 - remove board default and puzzles from redux/board
 - update to getPuzzleBoard(index, puzzles)

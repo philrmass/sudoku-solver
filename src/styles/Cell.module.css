@@ -31,4 +31,5 @@
 
 .active {
   color: var(--text-red);
+  font-weight: bold;
 }
