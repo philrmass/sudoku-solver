@@ -33,6 +33,11 @@ export function removeAllPossibles() {
   return { type: REMOVE_ALL_POSSIBLES };
 }
 
+export function setUniques() {
+  console.log('SET-UNIQUES');
+  return { type: 'BAD' };
+}
+
 export function clearActives() {
   return { type: CLEAR_ACTIVES};
 }

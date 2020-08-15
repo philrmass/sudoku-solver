@@ -8,6 +8,7 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  setUniques,
   clearActives,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
@@ -27,6 +28,7 @@ function Controls({
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  setUniques,
   clearActives,
 }) {
   useEffect(() => {
@@ -36,8 +38,8 @@ function Controls({
     }
   }, [actives]);
 
-  return (
-    <main className={styles.main}>
+  function buildPossibles() {
+    return (
       <section className={styles.section}>
         <div className={styles.title}>
           Remove Possibles
@@ -75,6 +77,31 @@ function Controls({
           </button>
         </div>
       </section>
+    );
+  }
+
+  function buildUniques() {
+    return (
+      <section className={styles.section}>
+        <div className={styles.title}>
+          Set Uniques
+        </div>
+        <div className={styles.buttons}>
+          <button
+            disabled={!hasRowPossibles(board)}
+            onClick={() => setUniques()}
+          >
+            All
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <main className={styles.main}>
+      {buildPossibles()}
+      {buildUniques()}
     </main>
   );
 }
@@ -87,6 +114,7 @@ Controls.propTypes = {
   removeBoxPossibles: PropTypes.func.isRequired,
   removeEachPossibles: PropTypes.func.isRequired,
   removeAllPossibles: PropTypes.func.isRequired,
+  setUniques: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
 };
 
@@ -101,6 +129,7 @@ const mapDispatch = {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
+  setUniques,
   clearActives,
 };
 

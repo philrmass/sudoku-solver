@@ -3,7 +3,7 @@
 }
 
 .title {
-  padding-bottom: var(--space1);
+  padding: var(--space1) 0;
 }
 
 button {
