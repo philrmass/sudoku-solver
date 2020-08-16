@@ -8,7 +8,9 @@ import {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setAllUniques,
+  setRowUniques,
+  setColumnUniques,
+  setBoxUniques,
   clearActives,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
@@ -18,6 +20,9 @@ import {
   hasColumnPossibles,
   hasBoxPossibles,
   hasAnyPossibles,
+  hasRowUniques,
+  hasColumnUniques,
+  hasBoxUniques,
 } from '../utilities/board';
 
 function Controls({
@@ -28,9 +33,13 @@ function Controls({
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setAllUniques,
+  setRowUniques,
+  setColumnUniques,
+  setBoxUniques,
   clearActives,
 }) {
+  const anyPossibles = hasAnyPossibles(board);
+
   useEffect(() => {
     if (actives) {
       const timeout = setTimeout(clearActives, 700);
@@ -64,7 +73,7 @@ function Controls({
             Box
           </button>
           <button
-            disabled={!hasAnyPossibles(board)}
+            disabled={!anyPossibles}
             onClick={() => removeEachPossibles()}
           >
             Each
@@ -88,10 +97,22 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!true}
-            onClick={() => setAllUniques()}
+            disabled={anyPossibles || !hasRowUniques(board)}
+            onClick={() => setRowUniques()}
           >
-            All
+            Row
+          </button>
+          <button
+            disabled={anyPossibles || !hasColumnUniques(board)}
+            onClick={() => setColumnUniques()}
+          >
+            Column
+          </button>
+          <button
+            disabled={anyPossibles || !hasBoxUniques(board)}
+            onClick={() => setBoxUniques()}
+          >
+            Box
           </button>
         </div>
       </section>
@@ -114,7 +135,9 @@ Controls.propTypes = {
   removeBoxPossibles: PropTypes.func.isRequired,
   removeEachPossibles: PropTypes.func.isRequired,
   removeAllPossibles: PropTypes.func.isRequired,
-  setAllUniques: PropTypes.func.isRequired,
+  setRowUniques: PropTypes.func.isRequired,
+  setColumnUniques: PropTypes.func.isRequired,
+  setBoxUniques: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
 };
 
@@ -129,7 +152,9 @@ const mapDispatch = {
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setAllUniques,
+  setRowUniques,
+  setColumnUniques,
+  setBoxUniques,
   clearActives,
 };
 

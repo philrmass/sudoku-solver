@@ -1,14 +1,14 @@
-import puzzlesStr from '../../data/puzzles.txt';
 import {
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
   removeEachPossibles,
   removeAllPossibles,
-  setAllUniques,
+  setRowUniques,
+  setColumnUniques,
+  setBoxUniques,
   getActives,
 } from '../../utilities/board';
-import { parsePuzzles, getPuzzleBoard } from '../../utilities/puzzles';
 
 import {
   SET_BOARD,
@@ -17,14 +17,14 @@ import {
   REMOVE_BOX_POSSIBLES,
   REMOVE_EACH_POSSIBLES,
   REMOVE_ALL_POSSIBLES,
-  SET_ALL_UNIQUES,
+  SET_ROW_UNIQUES,
+  SET_COLUMN_UNIQUES,
+  SET_BOX_UNIQUES,
   CLEAR_ACTIVES,
 } from './actions';
 
-//???? remove puzzles
-const puzzles = parsePuzzles(puzzlesStr);
 const defaultState = {
-  current: getPuzzleBoard(puzzles[0]),
+  current: null,
   actives: null,
 };
 
@@ -81,8 +81,26 @@ export default function boardReducer(state = defaultState, action) {
         actives,
       };
     }
-    case SET_ALL_UNIQUES: {
-      const board = setAllUniques(state.current);
+    case SET_ROW_UNIQUES: {
+      const board = setRowUniques(state.current);
+      const actives = getActives(state.current, board);
+      return {
+        ...state,
+        current: board,
+        actives,
+      };
+    }
+    case SET_COLUMN_UNIQUES: {
+      const board = setColumnUniques(state.current);
+      const actives = getActives(state.current, board);
+      return {
+        ...state,
+        current: board,
+        actives,
+      };
+    }
+    case SET_BOX_UNIQUES: {
+      const board = setBoxUniques(state.current);
       const actives = getActives(state.current, board);
       return {
         ...state,

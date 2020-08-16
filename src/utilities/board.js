@@ -21,12 +21,12 @@ export function hasAnyPossibles(board) {
 function hasPossibles(sectionIndices, board) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
   return indices.some((index) => {
-    const indices = sectionIndices[index];
-    return hasSectionPossibles(indices, board);
+    return hasSectionPossibles(index, sectionIndices, board);
   });
 }
 
-function hasSectionPossibles(indices, board) {
+function hasSectionPossibles(index, sectionIndices, board) {
+  const indices = sectionIndices[index];
   const cells = getCells(indices, board);
   const dones = getDones(cells);
   return cells.some((cell) => hasCellPossibles(cell, dones));
@@ -111,19 +111,51 @@ function removeDones(values, dones) {
   return values;
 }
 
-export function setAllUniques(board) {
-  const noRows = setRowUniques(board);
-  //const noColumns = removeColumnPossibles(noRows);
-  //return removeBoxPossibles(noColumns);
-  return noRows;
+export function hasRowUniques(board) {
+  return hasUniques(rowIndices, board);
+}
+
+export function hasColumnUniques(board) {
+  return hasUniques(columnIndices, board);
+}
+
+export function hasBoxUniques(board) {
+  return hasUniques(boxIndices, board);
+}
+
+function hasUniques(sectionIndices, board) {
+  const indices = Array.from({ length: 9 }, (_, index) => index);
+  return indices.some((index) => {
+    return hasSectionUniques(index, sectionIndices, board);
+  });
+}
+
+function hasSectionUniques(index, sectionIndices, board) {
+  const indices = sectionIndices[index];
+  const cells = getCells(indices, board);
+  const counts = getValueCounts(cells);
+  return counts.some((count) => count === 1);
 }
 
 export function setRowUniques(board) {
-  console.log('ROWS');
-  return setUniques(rowIndices, board);
+  const rowUniques = setUniques(rowIndices, board);
+  const noColumns = removeColumnPossibles(rowUniques);
+  return removeBoxPossibles(noColumns);
 }
 
-export function setUniques(sectionIndices, inBoard) {
+export function setColumnUniques(board) {
+  const colUniques = setUniques(columnIndices, board);
+  const noBoxes = removeBoxPossibles(colUniques);
+  return removeRowPossibles(noBoxes);
+}
+
+export function setBoxUniques(board) {
+  const boxUniques = setUniques(boxIndices, board);
+  const noRows = removeRowPossibles(boxUniques);
+  return removeColumnPossibles(noRows);
+}
+
+function setUniques(sectionIndices, inBoard) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
   const sections = indices.map((index) => {
     return getSetUniquesSection(index, sectionIndices, inBoard);
@@ -134,7 +166,6 @@ export function setUniques(sectionIndices, inBoard) {
 }
 
 function getSetUniquesSection(index, sectionIndices, board) {
-  console.log(` ${index}`);
   const indices = sectionIndices[index];
   const cells = getCells(indices, board);
   const counts = getValueCounts(cells);

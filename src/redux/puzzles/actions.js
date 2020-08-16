@@ -12,7 +12,7 @@ export function selectPuzzle(puzzleIndex) {
 
     dispatch(setBoard(board));
 
-    console.log('SELECT-PUZZLE', index, board);
+    console.log('SELECT-PUZZLE', index);
     return dispatch({
       type: SELECT_PUZZLE,
       index,
@@ -23,4 +23,3 @@ export function selectPuzzle(puzzleIndex) {
 function inRange(value, min , max) {
   return Math.min(Math.max(min, value), max);
 }
-
