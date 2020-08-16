@@ -8,11 +8,10 @@ export function selectPuzzle(puzzleIndex) {
     const state = getState();
     const puzzles = state.puzzles.unsolved;
     const index = inRange(puzzleIndex, 0, puzzles.length);
-    const board = getPuzzleBoard(puzzles[index]); //??? redo as getPuzzleBoard(index, puzzles)
+    const board = getPuzzleBoard(index, puzzles);
 
     dispatch(setBoard(board));
 
-    console.log('SELECT-PUZZLE', index);
     return dispatch({
       type: SELECT_PUZZLE,
       index,

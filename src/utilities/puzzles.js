@@ -54,6 +54,7 @@ function toDigits(line) {
   return digits;
 }
 
-export function getPuzzleBoard(puzzle) {
+export function getPuzzleBoard(index, puzzles) {
+  const puzzle = puzzles[index];
   return puzzle.cells.map((value) => value === 0 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [value]);
 }
