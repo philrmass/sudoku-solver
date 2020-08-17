@@ -20,6 +20,7 @@ import {
   SET_ROW_UNIQUES,
   SET_COLUMN_UNIQUES,
   SET_BOX_UNIQUES,
+  SOLVE_CURRENT,
   CLEAR_ACTIVES,
 } from './actions';
 
@@ -106,6 +107,12 @@ export default function boardReducer(state = defaultState, action) {
         ...state,
         current: board,
         actives,
+      };
+    }
+    case SOLVE_CURRENT: {
+      console.log('SOLVE-CURRENT');
+      return {
+        ...state,
       };
     }
     case CLEAR_ACTIVES:

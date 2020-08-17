@@ -11,6 +11,7 @@ import {
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  solveCurrent,
   clearActives,
 } from '../redux/board/actions';
 import styles from '../styles/Controls.module.css';
@@ -23,6 +24,7 @@ import {
   hasRowUniques,
   hasColumnUniques,
   hasBoxUniques,
+  isSolved,
 } from '../utilities/board';
 
 function Controls({
@@ -36,6 +38,7 @@ function Controls({
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  solveCurrent,
   clearActives,
 }) {
   const anyPossibles = hasAnyPossibles(board);
@@ -119,10 +122,29 @@ function Controls({
     );
   }
 
+  function buildSolves() {
+    return (
+      <section className={styles.section}>
+        <div className={styles.title}>
+          Solve
+        </div>
+        <div className={styles.buttons}>
+          <button
+            disabled={isSolved(board)}
+            onClick={() => solveCurrent()}
+          >
+            Current
+          </button>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <main className={styles.main}>
       {buildPossibles()}
       {buildUniques()}
+      {buildSolves()}
     </main>
   );
 }
@@ -138,6 +160,7 @@ Controls.propTypes = {
   setRowUniques: PropTypes.func.isRequired,
   setColumnUniques: PropTypes.func.isRequired,
   setBoxUniques: PropTypes.func.isRequired,
+  solveCurrent: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
 };
 
@@ -155,6 +178,7 @@ const mapDispatch = {
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  solveCurrent,
   clearActives,
 };
 

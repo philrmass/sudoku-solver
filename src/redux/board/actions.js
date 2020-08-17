@@ -7,6 +7,7 @@ export const REMOVE_ALL_POSSIBLES = 'REMOVE_ALL_POSSIBLES';
 export const SET_ROW_UNIQUES = 'SET_ROW_UNIQUES';
 export const SET_COLUMN_UNIQUES = 'SET_COLUMN_UNIQUES';
 export const SET_BOX_UNIQUES = 'SET_BOX_UNIQUES';
+export const SOLVE_CURRENT = 'SOLVE_CURRENT';
 export const CLEAR_ACTIVES = 'CLEAR_ACTIVES';
 
 export function setBoard(board) {
@@ -46,6 +47,10 @@ export function setColumnUniques() {
 
 export function setBoxUniques() {
   return { type: SET_BOX_UNIQUES };
+}
+
+export function solveCurrent() {
+  return { type: SOLVE_CURRENT };
 }
 
 export function clearActives() {

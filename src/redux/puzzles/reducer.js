@@ -7,7 +7,7 @@ import {
 
 const defaultState = {
   unsolved: parsePuzzles(puzzlesStr),
-  index: 13,
+  index: 0,
 };
 
 export default function puzzlesReducer(state = defaultState, action) {

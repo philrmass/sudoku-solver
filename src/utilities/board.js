@@ -223,3 +223,7 @@ export function getActives(lastBoard, board) {
     return [];
   });
 }
+
+export function isSolved(board) {
+  return board.every((cell) => cell.length === 1);
+}
