@@ -138,21 +138,18 @@ function hasSectionUniques(index, sectionIndices, board) {
 }
 
 export function setRowUniques(board) {
-  const rowUniques = setUniques(rowIndices, board);
-  const noColumns = removeColumnPossibles(rowUniques);
-  return removeBoxPossibles(noColumns);
+  const uniques = setUniques(rowIndices, board);
+  return removeEachPossibles(uniques);
 }
 
 export function setColumnUniques(board) {
-  const colUniques = setUniques(columnIndices, board);
-  const noBoxes = removeBoxPossibles(colUniques);
-  return removeRowPossibles(noBoxes);
+  const uniques = setUniques(columnIndices, board);
+  return removeEachPossibles(uniques);
 }
 
 export function setBoxUniques(board) {
-  const boxUniques = setUniques(boxIndices, board);
-  const noRows = removeRowPossibles(boxUniques);
-  return removeColumnPossibles(noRows);
+  const uniques = setUniques(boxIndices, board);
+  return removeEachPossibles(uniques);
 }
 
 function setUniques(sectionIndices, inBoard) {
@@ -226,4 +223,39 @@ export function getActives(lastBoard, board) {
 
 export function isSolved(board) {
   return board.every((cell) => cell.length === 1);
+}
+
+export function solve(board) {
+  let removed = board;
+  let hasChanged = true;
+
+  while (hasChanged) {
+    hasChanged = false;
+
+    if (hasAnyPossibles(removed)) {
+      removed = removeAllPossibles(removed);
+      hasChanged = true;
+    } 
+    if (hasRowUniques(removed)) {
+      removed = setRowUniques(removed);
+      hasChanged = true;
+    } else if (hasColumnUniques(removed)) {
+      removed = setColumnUniques(removed);
+      hasChanged = true;
+    } else if (hasBoxUniques(removed)) {
+      removed = setBoxUniques(removed);
+      hasChanged = true;
+    }
+  }
+
+  return removed;
+}
+
+export function getAveragePossibles(board) {
+  const total = board.reduce((average, cell) => {
+    return average + cell.length;
+  }, 0);
+  const average = total / board.length;
+
+  return Math.round(100 * average) / 100;
 }

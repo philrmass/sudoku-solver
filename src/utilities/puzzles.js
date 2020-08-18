@@ -54,7 +54,22 @@ function toDigits(line) {
   return digits;
 }
 
-export function getPuzzleBoard(index, puzzles) {
-  const puzzle = puzzles[index];
+export function getPuzzleBoard(puzzle) {
   return puzzle.cells.map((value) => value === 0 ? [1, 2, 3, 4, 5, 6, 7, 8, 9] : [value]);
 }
+
+export function getSolvedSummary(solved) {
+  return solved.reduce((out, puzzle) => {
+    const correct = isCorrect(puzzle.cells);
+    if (!correct) {
+      const average = `${puzzle.average.toFixed(2)}`;
+      return out + `${puzzle.name}, ${average}\n`;
+    }
+    return out;
+  }, '');
+}
+
+function isCorrect(board) {
+  return board.every((cell) => cell.length === 1);
+}
+

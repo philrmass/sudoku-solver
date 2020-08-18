@@ -2,13 +2,14 @@ import { getPuzzleBoard } from '../../utilities/puzzles';
 import { setBoard } from '../board/actions';
 
 export const SELECT_PUZZLE = 'SELECT_PUZZLE';
+export const SOLVE_ALL_PUZZLES = 'SOLVE_ALL_PUZZLES';
 
 export function selectPuzzle(puzzleIndex) {
   return async (dispatch, getState) => {
     const state = getState();
     const puzzles = state.puzzles.unsolved;
     const index = inRange(puzzleIndex, 0, puzzles.length);
-    const board = getPuzzleBoard(index, puzzles);
+    const board = getPuzzleBoard(puzzles[index]);
 
     dispatch(setBoard(board));
 
@@ -16,6 +17,12 @@ export function selectPuzzle(puzzleIndex) {
       type: SELECT_PUZZLE,
       index,
     });
+  };
+}
+
+export function solveAllPuzzles() {
+  return {
+    type: SOLVE_ALL_PUZZLES,
   };
 }
 

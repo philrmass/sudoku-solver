@@ -14,6 +14,10 @@ import {
   solveCurrent,
   clearActives,
 } from '../redux/board/actions';
+import {
+  selectPuzzle,
+  solveAllPuzzles,
+} from '../redux/puzzles/actions';
 import styles from '../styles/Controls.module.css';
 
 import {
@@ -30,6 +34,7 @@ import {
 function Controls({
   board,
   actives,
+  index,
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
@@ -40,6 +45,8 @@ function Controls({
   setBoxUniques,
   solveCurrent,
   clearActives,
+  selectPuzzle,
+  solveAllPuzzles,
 }) {
   const anyPossibles = hasAnyPossibles(board);
 
@@ -100,19 +107,19 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={anyPossibles || !hasRowUniques(board)}
+            disabled={!hasRowUniques(board)}
             onClick={() => setRowUniques()}
           >
             Row
           </button>
           <button
-            disabled={anyPossibles || !hasColumnUniques(board)}
+            disabled={!hasColumnUniques(board)}
             onClick={() => setColumnUniques()}
           >
             Column
           </button>
           <button
-            disabled={anyPossibles || !hasBoxUniques(board)}
+            disabled={!hasBoxUniques(board)}
             onClick={() => setBoxUniques()}
           >
             Box
@@ -135,6 +142,12 @@ function Controls({
           >
             Current
           </button>
+          <button onClick={() => solveAllPuzzles()}>
+            All
+          </button>
+          <button onClick={() => selectPuzzle(index)}>
+            Reset
+          </button>
         </div>
       </section>
     );
@@ -152,6 +165,7 @@ function Controls({
 Controls.propTypes = {
   board: PropTypes.array.isRequired,
   actives: PropTypes.array,
+  index: PropTypes.number.isRequired,
   removeRowPossibles: PropTypes.func.isRequired,
   removeColumnPossibles: PropTypes.func.isRequired,
   removeBoxPossibles: PropTypes.func.isRequired,
@@ -162,11 +176,14 @@ Controls.propTypes = {
   setBoxUniques: PropTypes.func.isRequired,
   solveCurrent: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
+  selectPuzzle: PropTypes.func.isRequired,
+  solveAllPuzzles: PropTypes.func.isRequired,
 };
 
 const mapState = (state) => ({
   board: state.board.current,
   actives: state.board.actives,
+  index: state.puzzles.index,
 });
 
 const mapDispatch = {
@@ -180,6 +197,8 @@ const mapDispatch = {
   setBoxUniques,
   solveCurrent,
   clearActives,
+  selectPuzzle,
+  solveAllPuzzles,
 };
 
 export default connect(mapState, mapDispatch)(Controls);

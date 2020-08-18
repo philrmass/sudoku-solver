@@ -8,6 +8,7 @@ import {
   setColumnUniques,
   setBoxUniques,
   getActives,
+  solve,
 } from '../../utilities/board';
 
 import {
@@ -110,9 +111,10 @@ export default function boardReducer(state = defaultState, action) {
       };
     }
     case SOLVE_CURRENT: {
-      console.log('SOLVE-CURRENT');
+      const current = solve(state.current);
       return {
         ...state,
+        current,
       };
     }
     case CLEAR_ACTIVES:
