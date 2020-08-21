@@ -3,12 +3,10 @@
   --space1: 8px;
   --space2: 16px;
   --text-black: #181818;
-  --text-gray: #888888;
-  --text-blue: #6060d8;
-  --text-red: #f82020;
-  --light-gray: #f4f4f4;
-  --mid-light-gray: #e0e0e0;
-  --mid-gray: #d0d0d0;
+  --text-gray: #585858;
+  --text-red: #d80800;
+  --gray: #d0d0d0;
+  --gold: #c0b000;
   --radius: 2px;
   --cell-size: 60px;
   --done-size: calc(.55 * var(--cell-size));
@@ -29,16 +27,16 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  background: var(--light-gray);
+  background: white;
   font-family: Arial;
 }
 
 button {
-  background: var(--mid-gray);
+  background: var(--gold);
   padding: var(--space1) var(--space2);
 }
 
 button:disabled {
-  background: var(--mid-light-gray);
+  background: var(--gray);
   color: var(--text-gray);
 }
