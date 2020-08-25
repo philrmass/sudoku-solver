@@ -1,28 +1,13 @@
 import {
   getAllMoves,
-  removeRowPossibles,
-  removeColumnPossibles,
-  removeBoxPossibles,
-  removeEachPossibles,
-  removeAllPossibles,
-  setRowUniques,
-  setColumnUniques,
-  setBoxUniques,
-  getActives,
+  removePossibles,
   solve,
 } from '../../utilities/board';
 
 import {
   SET_BOARD,
-  REMOVE_ROW_POSSIBLES,
-  REMOVE_COLUMN_POSSIBLES,
-  REMOVE_BOX_POSSIBLES,
-  REMOVE_EACH_POSSIBLES,
-  REMOVE_ALL_POSSIBLES,
-  SET_ROW_UNIQUES,
-  SET_COLUMN_UNIQUES,
-  SET_BOX_UNIQUES,
-  USE_ROW_INTERSECTIONS,
+  SET_REMOVABLES,
+  REMOVE_POSSIBLES,
   SOLVE_CURRENT,
   CLEAR_ACTIVES,
 } from './actions';
@@ -38,92 +23,27 @@ export default function boardReducer(state = defaultState, action) {
   switch(action.type) {
     case SET_BOARD: {
       const moves = getAllMoves(action.board);
-      console.log('M', moves);
       return {
         ...state,
         current: action.board,
         ...moves,
       };
     }
-    case REMOVE_ROW_POSSIBLES: {
-      const board = removeRowPossibles(state.current);
-      const actives = getActives(state.current, board);
+    case SET_REMOVABLES: {
       return {
         ...state,
-        current: board,
-        actives,
+        removables: action.values,
       };
     }
-    case REMOVE_COLUMN_POSSIBLES: {
-      const board = removeColumnPossibles(state.current);
-      const actives = getActives(state.current, board);
+    case REMOVE_POSSIBLES: {
+      const current = removePossibles(state.current, action.values);
+      const moves = getAllMoves(current);
       return {
         ...state,
-        current: board,
-        actives,
+        current,
+        removables: null,
+        ...moves,
       };
-    }
-    case REMOVE_BOX_POSSIBLES: {
-      const board = removeBoxPossibles(state.current);
-      const actives = getActives(state.current, board);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case REMOVE_EACH_POSSIBLES: {
-      const board = removeEachPossibles(state.current);
-      const actives = getActives(state.current, board);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case REMOVE_ALL_POSSIBLES: {
-      const start = Date.now();
-      const board = removeAllPossibles(state.current);
-      const actives = getActives(state.current, board);
-      const end = Date.now();
-      console.log('ALL', end - start);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case SET_ROW_UNIQUES: {
-      const board = setRowUniques(state.current);
-      const actives = getActives(state.current, board);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case SET_COLUMN_UNIQUES: {
-      const board = setColumnUniques(state.current);
-      const actives = getActives(state.current, board);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case SET_BOX_UNIQUES: {
-      const board = setBoxUniques(state.current);
-      const actives = getActives(state.current, board);
-      return {
-        ...state,
-        current: board,
-        actives,
-      };
-    }
-    case USE_ROW_INTERSECTIONS: {
-      return {
-        ...state,
-      }
     }
     case SOLVE_CURRENT: {
       const current = solve(state.current);

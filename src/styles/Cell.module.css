@@ -33,3 +33,8 @@
   color: var(--text-active);
   font-weight: bold;
 }
+
+.removable {
+  color: var(--text-removeable);
+  font-weight: bold;
+}

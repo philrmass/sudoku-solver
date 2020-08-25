@@ -7,7 +7,7 @@ import styles from '../styles/Cell.module.css';
 function Cell({
   index,
   board,
-  actives,
+  removables,
 }) {
   function buildValue() {
     const values = board[index];
@@ -18,9 +18,8 @@ function Cell({
   }
 
   function buildSolution(value) {
-    const isActive = actives && actives[index].length === 1;
     return (
-      <div className={`${styles.done} ${isActive ? styles.active : ''}`}>
+      <div className={styles.done} >
         {value}
       </div>
     );
@@ -31,16 +30,16 @@ function Cell({
     const all = values.reduce((all, value) => {
       return [...all.slice(0, value - 1), value, ...all.slice(value)];
     }, blanks);
-    const cellActives = actives ? actives[index] : [];
+    const cellRemovables = removables ? removables[index] : [];
 
     return (
       <div className={styles.possibles}>
         {all.map((value, i) => {
-          const isActive = cellActives.includes(i + 1);
+          const isRemovable = cellRemovables.includes(i + 1);
 
-          if (isActive) {
+          if (isRemovable) {
             return (
-              <div key={i} className={`${styles.possible} ${styles.active}`}>
+              <div key={i} className={`${styles.possible} ${styles.removable}`}>
                 {i + 1}
               </div>
             );
@@ -65,12 +64,12 @@ function Cell({
 Cell.propTypes = {
   index: PropTypes.number.isRequired,
   board: PropTypes.array.isRequired,
-  actives: PropTypes.array,
+  removables: PropTypes.array,
 };
 
 const mapState = (state) => ({
   board: state.board.current,
-  actives: state.board.actives,
+  removables: state.board.removables,
 });
 
 export default connect(mapState)(Cell);

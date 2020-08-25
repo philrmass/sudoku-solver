@@ -3,16 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
+  setRemovables,
   removePossibles,
-  removeRowPossibles,
-  removeColumnPossibles,
-  removeBoxPossibles,
-  removeEachPossibles,
-  removeAllPossibles,
-  setRowUniques,
-  setColumnUniques,
-  setBoxUniques,
-  useRowIntersections,
   solveCurrent,
   clearActives,
 } from '../redux/board/actions';
@@ -23,38 +15,34 @@ import {
 import styles from '../styles/Controls.module.css';
 
 import {
-  hasRowPossibles,
-  hasColumnPossibles,
-  hasBoxPossibles,
-  hasAnyPossibles,
-  hasRowUniques,
-  hasColumnUniques,
-  hasBoxUniques,
   isSolved,
 } from '../utilities/board';
 
 function Controls({
   board,
   actives,
-  removables,
   rowPossibles,
+  columnPossibles,
+  boxPossibles,
+  allPossibles,
+  rowUniques,
+  columnUniques,
+  boxUniques,
   index,
-  removeRowPossibles,
-  removeColumnPossibles,
-  removeBoxPossibles,
-  removeEachPossibles,
-  removeAllPossibles,
-  setRowUniques,
-  setColumnUniques,
-  setBoxUniques,
-  useRowIntersections,
+  setRemovables,
+  removePossibles,
   solveCurrent,
   clearActives,
   selectPuzzle,
   solveAllPuzzles,
 }) {
-  const anyPossibles = hasAnyPossibles(board);
-  console.log('RP', rowPossibles);
+  console.log('\nRP', rowPossibles && rowPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('CP', columnPossibles && columnPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('BP', boxPossibles && boxPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('AP', allPossibles && allPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('RU', rowUniques && rowUniques.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('CU', columnUniques && columnUniques.reduce((cnt, cell) => cnt + cell.length, 0));
+  console.log('BU', boxUniques && boxUniques.reduce((cnt, cell) => cnt + cell.length, 0));
 
   useEffect(() => {
     if (actives) {
@@ -72,31 +60,33 @@ function Controls({
         <div className={styles.buttons}>
           <button
             disabled={!rowPossibles}
+            onMouseEnter={() => setRemovables(rowPossibles)}
+            onMouseLeave={() => setRemovables(null)}
             onClick={() => removePossibles(rowPossibles)}
           >
             Row
           </button>
           <button
-            disabled={true}
-            onClick={() => removeColumnPossibles()}
+            disabled={!columnPossibles}
+            onMouseEnter={() => setRemovables(columnPossibles)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(columnPossibles)}
           >
             Column
           </button>
           <button
-            disabled={true}
-            onClick={() => removeBoxPossibles()}
+            disabled={!boxPossibles}
+            onMouseEnter={() => setRemovables(boxPossibles)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(boxPossibles)}
           >
             Box
           </button>
           <button
-            disabled={true}
-            onClick={() => removeEachPossibles()}
-          >
-            Each
-          </button>
-          <button
-            disabled={true}
-            onClick={() => removeAllPossibles()}
+            disabled={!allPossibles}
+            onMouseEnter={() => setRemovables(allPossibles)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(allPossibles)}
           >
             All
           </button>
@@ -113,20 +103,26 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={true}
-            onClick={() => setRowUniques()}
+            disabled={!rowUniques}
+            onMouseEnter={() => setRemovables(rowUniques)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(rowUniques)}
           >
             Row
           </button>
           <button
-            disabled={true}
-            onClick={() => setColumnUniques()}
+            disabled={!columnUniques}
+            onMouseEnter={() => setRemovables(columnUniques)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(columnUniques)}
           >
             Column
           </button>
           <button
-            disabled={true}
-            onClick={() => setBoxUniques()}
+            disabled={!boxUniques}
+            onMouseEnter={() => setRemovables(boxUniques)}
+            onMouseLeave={() => setRemovables(null)}
+            onClick={() => removePossibles(boxUniques)}
           >
             Box
           </button>
@@ -144,18 +140,14 @@ function Controls({
         <div className={styles.buttons}>
           <button
             disabled={true}
-            onClick={() => useRowIntersections()}
           >
             Row-Box
           </button>
-          {/*
           <button
             disabled={true}
-            onClick={() => setColumnUniques()}
           >
             Column-Box
           </button>
-          */}
         </div>
       </section>
     );
@@ -198,16 +190,16 @@ function Controls({
 Controls.propTypes = {
   board: PropTypes.array.isRequired,
   actives: PropTypes.array,
+  rowPossibles: PropTypes.array,
+  columnPossibles: PropTypes.array,
+  boxPossibles: PropTypes.array,
+  allPossibles: PropTypes.array,
+  rowUniques: PropTypes.array,
+  columnUniques: PropTypes.array,
+  boxUniques: PropTypes.array,
   index: PropTypes.number.isRequired,
-  removeRowPossibles: PropTypes.func.isRequired,
-  removeColumnPossibles: PropTypes.func.isRequired,
-  removeBoxPossibles: PropTypes.func.isRequired,
-  removeEachPossibles: PropTypes.func.isRequired,
-  removeAllPossibles: PropTypes.func.isRequired,
-  setRowUniques: PropTypes.func.isRequired,
-  setColumnUniques: PropTypes.func.isRequired,
-  setBoxUniques: PropTypes.func.isRequired,
-  useRowIntersections: PropTypes.func.isRequired,
+  setRemovables: PropTypes.func.isRequired,
+  removePossibles: PropTypes.func.isRequired,
   solveCurrent: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
   selectPuzzle: PropTypes.func.isRequired,
@@ -217,21 +209,19 @@ Controls.propTypes = {
 const mapState = (state) => ({
   board: state.board.current,
   actives: state.board.actives,
-  removables: state.board.actives,
   rowPossibles: state.board.rowPossibles,
+  columnPossibles: state.board.columnPossibles,
+  boxPossibles: state.board.boxPossibles,
+  allPossibles: state.board.allPossibles,
+  rowUniques: state.board.rowUniques,
+  columnUniques: state.board.columnUniques,
+  boxUniques: state.board.boxUniques,
   index: state.puzzles.index,
 });
 
 const mapDispatch = {
-  removeRowPossibles,
-  removeColumnPossibles,
-  removeBoxPossibles,
-  removeEachPossibles,
-  removeAllPossibles,
-  setRowUniques,
-  setColumnUniques,
-  setBoxUniques,
-  useRowIntersections,
+  setRemovables,
+  removePossibles,
   solveCurrent,
   clearActives,
   selectPuzzle,

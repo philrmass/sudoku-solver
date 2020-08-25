@@ -6,21 +6,50 @@ export function getAllMoves(board) {
   }
 
   const noRowPossibles = removeRowPossibles(board);
+  const noColumnPossibles = removeColumnPossibles(board);
+  const noBoxPossibles = removeBoxPossibles(board);
+  const noPossibles = removeAllPossibles(board); 
+  const noRowUniques = setRowUniques(board);
+  const noColumnUniques = setColumnUniques(board);
+  const noBoxUniques = setBoxUniques(board);
 
   const rowPossibles = getBoardDiff(board, noRowPossibles);
+  const columnPossibles = getBoardDiff(board, noColumnPossibles);
+  const boxPossibles = getBoardDiff(board, noBoxPossibles);
+  const allPossibles = getBoardDiff(board, noPossibles);
+  const rowUniques = getBoardDiff(board, noRowUniques);
+  const columnUniques = getBoardDiff(board, noColumnUniques);
+  const boxUniques = getBoardDiff(board, noBoxUniques);
 
   return {
     rowPossibles,
+    columnPossibles,
+    boxPossibles,
+    allPossibles,
+    rowUniques,
+    columnUniques,
+    boxUniques,
   };
 }
 
 function getBoardDiff(lastBoard, board) {
-  return board.map((cell, index) => {
+  const removables = board.map((cell, index) => {
     const lastCell = lastBoard[index];
     if (lastCell.length > cell.length) {
       return lastCell.filter((value) => !cell.includes(value));
     }
     return [];
+  });
+
+  if (removables.some((cell) => cell.length > 0)) {
+    return removables;
+  }
+  return null;
+}
+
+export function removePossibles(board, possibles) {
+  return board.map((cell, index) => {
+    return cell.filter((value) => !possibles[index].includes(value));
   });
 }
 
@@ -63,25 +92,19 @@ function hasCellPossibles(cell, dones) {
   return false;
 }
 
-export function removeRowPossibles(board) {
-  return removePossibles(rowIndices, board);
+function removeRowPossibles(board) {
+  return removeSectionPossibles(rowIndices, board);
 }
 
-export function removeColumnPossibles(board) {
-  return removePossibles(columnIndices, board);
+function removeColumnPossibles(board) {
+  return removeSectionPossibles(columnIndices, board);
 }
 
-export function removeBoxPossibles(board) {
-  return removePossibles(boxIndices, board);
+function removeBoxPossibles(board) {
+  return removeSectionPossibles(boxIndices, board);
 }
 
-export function removeEachPossibles(board) {
-  const rowFiltered = removePossibles(rowIndices, board);
-  const columnFiltered = removePossibles(columnIndices, rowFiltered);
-  return removePossibles(boxIndices, columnFiltered);
-}
-
-export function removeAllPossibles(board) {
+function removeAllPossibles(board) {
   let removed = board;
   while (hasAnyPossibles(removed)) {
     const noRows = removeRowPossibles(removed);
@@ -91,7 +114,7 @@ export function removeAllPossibles(board) {
   return removed;
 }
 
-export function removePossibles(sectionIndices, inBoard) {
+function removeSectionPossibles(sectionIndices, inBoard) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
   const sections = indices.map((index) => {
     return getNoPossiblesSection(index, sectionIndices, inBoard);
@@ -162,18 +185,21 @@ function hasSectionUniques(index, sectionIndices, board) {
 }
 
 export function setRowUniques(board) {
+  //??? fix to clear other possibles
   const uniques = setUniques(rowIndices, board);
-  return removeEachPossibles(uniques);
+  return uniques; //removeEachPossibles(uniques);
 }
 
 export function setColumnUniques(board) {
+  //??? fix to clear other possibles
   const uniques = setUniques(columnIndices, board);
-  return removeEachPossibles(uniques);
+  return uniques; //removeEachPossibles(uniques);
 }
 
 export function setBoxUniques(board) {
+  //??? fix to clear other possibles
   const uniques = setUniques(boxIndices, board);
-  return removeEachPossibles(uniques);
+  return uniques; //removeEachPossibles(uniques);
 }
 
 function setUniques(sectionIndices, inBoard) {
