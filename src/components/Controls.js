@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
+  removePossibles,
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
@@ -11,6 +12,7 @@ import {
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  useRowIntersections,
   solveCurrent,
   clearActives,
 } from '../redux/board/actions';
@@ -34,6 +36,8 @@ import {
 function Controls({
   board,
   actives,
+  removables,
+  rowPossibles,
   index,
   removeRowPossibles,
   removeColumnPossibles,
@@ -43,12 +47,14 @@ function Controls({
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  useRowIntersections,
   solveCurrent,
   clearActives,
   selectPuzzle,
   solveAllPuzzles,
 }) {
   const anyPossibles = hasAnyPossibles(board);
+  console.log('RP', rowPossibles);
 
   useEffect(() => {
     if (actives) {
@@ -65,31 +71,31 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!hasRowPossibles(board)}
-            onClick={() => removeRowPossibles()}
+            disabled={!rowPossibles}
+            onClick={() => removePossibles(rowPossibles)}
           >
             Row
           </button>
           <button
-            disabled={!hasColumnPossibles(board)}
+            disabled={true}
             onClick={() => removeColumnPossibles()}
           >
             Column
           </button>
           <button
-            disabled={!hasBoxPossibles(board)}
+            disabled={true}
             onClick={() => removeBoxPossibles()}
           >
             Box
           </button>
           <button
-            disabled={!anyPossibles}
+            disabled={true}
             onClick={() => removeEachPossibles()}
           >
             Each
           </button>
           <button
-            disabled={!hasAnyPossibles(board)}
+            disabled={true}
             onClick={() => removeAllPossibles()}
           >
             All
@@ -107,23 +113,49 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!hasRowUniques(board)}
+            disabled={true}
             onClick={() => setRowUniques()}
           >
             Row
           </button>
           <button
-            disabled={!hasColumnUniques(board)}
+            disabled={true}
             onClick={() => setColumnUniques()}
           >
             Column
           </button>
           <button
-            disabled={!hasBoxUniques(board)}
+            disabled={true}
             onClick={() => setBoxUniques()}
           >
             Box
           </button>
+        </div>
+      </section>
+    );
+  }
+
+  function buildIntersections() {
+    return (
+      <section className={styles.section}>
+        <div className={styles.title}>
+          Use Intersections
+        </div>
+        <div className={styles.buttons}>
+          <button
+            disabled={true}
+            onClick={() => useRowIntersections()}
+          >
+            Row-Box
+          </button>
+          {/*
+          <button
+            disabled={true}
+            onClick={() => setColumnUniques()}
+          >
+            Column-Box
+          </button>
+          */}
         </div>
       </section>
     );
@@ -157,6 +189,7 @@ function Controls({
     <main className={styles.main}>
       {buildPossibles()}
       {buildUniques()}
+      {buildIntersections()}
       {buildSolves()}
     </main>
   );
@@ -174,6 +207,7 @@ Controls.propTypes = {
   setRowUniques: PropTypes.func.isRequired,
   setColumnUniques: PropTypes.func.isRequired,
   setBoxUniques: PropTypes.func.isRequired,
+  useRowIntersections: PropTypes.func.isRequired,
   solveCurrent: PropTypes.func.isRequired,
   clearActives: PropTypes.func.isRequired,
   selectPuzzle: PropTypes.func.isRequired,
@@ -183,6 +217,8 @@ Controls.propTypes = {
 const mapState = (state) => ({
   board: state.board.current,
   actives: state.board.actives,
+  removables: state.board.actives,
+  rowPossibles: state.board.rowPossibles,
   index: state.puzzles.index,
 });
 
@@ -195,6 +231,7 @@ const mapDispatch = {
   setRowUniques,
   setColumnUniques,
   setBoxUniques,
+  useRowIntersections,
   solveCurrent,
   clearActives,
   selectPuzzle,

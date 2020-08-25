@@ -3,10 +3,12 @@
   --space1: 8px;
   --space2: 16px;
   --text-black: #181818;
-  --text-gray: #585858;
-  --text-red: #d80800;
-  --gray: #d0d0d0;
-  --gold: #c0b000;
+  --text-active: #20d8d8;
+  --text-disabled: #585858;
+  --text-hover: #181818;
+  --button: #88b8e0;
+  --button-disabled: #d0d0d0;
+  --button-hover: #20f0f0;
   --radius: 2px;
   --cell-size: 60px;
   --done-size: calc(.55 * var(--cell-size));
@@ -32,11 +34,16 @@ body {
 }
 
 button {
-  background: var(--gold);
+  background: var(--button);
   padding: var(--space1) var(--space2);
 }
 
+button:hover {
+  background: var(--button-hover);
+  color: var(--text-hover);
+}
+
 button:disabled {
-  background: var(--gray);
-  color: var(--text-gray);
+  background: var(--button-disabled);
+  color: var(--text-disabled);
 }

@@ -1,5 +1,29 @@
 import { rowIndices, columnIndices, boxIndices } from '../data/indices';
 
+export function getAllMoves(board) {
+  if (!board) {
+    return {};
+  }
+
+  const noRowPossibles = removeRowPossibles(board);
+
+  const rowPossibles = getBoardDiff(board, noRowPossibles);
+
+  return {
+    rowPossibles,
+  };
+}
+
+function getBoardDiff(lastBoard, board) {
+  return board.map((cell, index) => {
+    const lastCell = lastBoard[index];
+    if (lastCell.length > cell.length) {
+      return lastCell.filter((value) => !cell.includes(value));
+    }
+    return [];
+  });
+}
+
 export function hasRowPossibles(board) {
   return hasPossibles(rowIndices, board);
 }

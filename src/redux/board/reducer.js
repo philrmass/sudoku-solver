@@ -1,4 +1,5 @@
 import {
+  getAllMoves,
   removeRowPossibles,
   removeColumnPossibles,
   removeBoxPossibles,
@@ -21,6 +22,7 @@ import {
   SET_ROW_UNIQUES,
   SET_COLUMN_UNIQUES,
   SET_BOX_UNIQUES,
+  USE_ROW_INTERSECTIONS,
   SOLVE_CURRENT,
   CLEAR_ACTIVES,
 } from './actions';
@@ -28,14 +30,19 @@ import {
 const defaultState = {
   current: null,
   actives: null,
+  removables: null,
+  rowPossibles: null,
 };
 
 export default function boardReducer(state = defaultState, action) {
   switch(action.type) {
     case SET_BOARD: {
+      const moves = getAllMoves(action.board);
+      console.log('M', moves);
       return {
         ...state,
         current: action.board,
+        ...moves,
       };
     }
     case REMOVE_ROW_POSSIBLES: {
@@ -75,8 +82,11 @@ export default function boardReducer(state = defaultState, action) {
       };
     }
     case REMOVE_ALL_POSSIBLES: {
+      const start = Date.now();
       const board = removeAllPossibles(state.current);
       const actives = getActives(state.current, board);
+      const end = Date.now();
+      console.log('ALL', end - start);
       return {
         ...state,
         current: board,
@@ -109,6 +119,11 @@ export default function boardReducer(state = defaultState, action) {
         current: board,
         actives,
       };
+    }
+    case USE_ROW_INTERSECTIONS: {
+      return {
+        ...state,
+      }
     }
     case SOLVE_CURRENT: {
       const current = solve(state.current);

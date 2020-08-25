@@ -30,6 +30,6 @@
 }
 
 .active {
-  color: var(--text-red);
+  color: var(--text-active);
   font-weight: bold;
 }

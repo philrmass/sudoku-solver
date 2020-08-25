@@ -7,6 +7,7 @@ export const REMOVE_ALL_POSSIBLES = 'REMOVE_ALL_POSSIBLES';
 export const SET_ROW_UNIQUES = 'SET_ROW_UNIQUES';
 export const SET_COLUMN_UNIQUES = 'SET_COLUMN_UNIQUES';
 export const SET_BOX_UNIQUES = 'SET_BOX_UNIQUES';
+export const USE_ROW_INTERSECTIONS = 'USE_ROW_INTERSECTIONS';
 export const SOLVE_CURRENT = 'SOLVE_CURRENT';
 export const CLEAR_ACTIVES = 'CLEAR_ACTIVES';
 
@@ -15,6 +16,11 @@ export function setBoard(board) {
     type: SET_BOARD,
     board,
   };
+}
+
+export function removePossibles(possibles) {
+  console.log('REMOVE-POSSIBLES', possibles);
+  //???? add action type
 }
 
 export function removeRowPossibles() {
@@ -47,6 +53,10 @@ export function setColumnUniques() {
 
 export function setBoxUniques() {
   return { type: SET_BOX_UNIQUES };
+}
+
+export function useRowIntersections() {
+  return { type: USE_ROW_INTERSECTIONS };
 }
 
 export function solveCurrent() {
