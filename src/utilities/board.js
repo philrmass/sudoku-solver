@@ -1,4 +1,9 @@
-import { rowIndices, columnIndices, boxIndices } from '../data/indices';
+import {
+  rowIndices,
+  columnIndices,
+  boxIndices,
+  cellRowIndices,
+} from '../data/indices';
 
 export function getAllMoves(board) {
   if (!board) {
@@ -190,10 +195,19 @@ export function setRowUniques(board) {
   return setUniques(rowIndices, board);
 }
 
-export function setColumnUniques(board) {
-  const uniques = findUniques(columnIndices, board);
+export function setColumnUniques(inBoard) {
+  const uniques = findUniques(columnIndices, inBoard);
 
-  return setUniques(columnIndices, board);
+  const set = uniques.reduce((board, unique) => {
+    const hasUnique = setUnique(unique, board)
+    const noRows = removeUniqueFromRow(unique, hasUnique);
+    //const noRows = removeBoxUnique(unique, board)
+    return hasUnique;
+  }, inBoard);
+  console.log('CUNI', uniques);
+
+  return set;
+  //return setUniques(columnIndices, inBoard);
 }
 
 export function setBoxUniques(board) {
@@ -202,30 +216,49 @@ export function setBoxUniques(board) {
 
 function findUniques(sectionIndices, board) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
-  const sections = indices.map((index) => {
+  return indices.map((index) => {
     return findSectionUniques(sectionIndices[index], board);
-  });
+  }).flat();
 }
 
 function findSectionUniques(indices, board) {
   const cells = getCells(indices, board);
   const counts = getValueCounts(cells);
-  const uniques = counts.reduce((uniques, count, index) => {
+  return counts.reduce((uniques, count, index) => {
     if (count === 1) {
       const value = index + 1;
-      const cellIndex = indices[index];
+      const cell = cells.find((cell) => cell.values.includes(value));
       const unique = {
         value,
-        cellIndex,
+        index: cell.index,
       };
       return [...uniques, unique];
     }
     return uniques;
   }, []);
+}
 
-  if (indices.includes(0)) {
-    console.log('SECU', indices, '\nC', counts, '\nU', uniques);
-  }
+function setUnique(unique, board) {
+  const start = board.slice(0, unique.index);
+  const cell = [unique.value];
+  const end = board.slice(unique.index + 1);
+  return [...start, cell, ...end];
+}
+
+function removeUniqueFromRow(unique, board) {
+  const rowIndex = cellRowIndices[unique.index];
+  const indices = rowIndices[rowIndex];
+  console.log('RI', indices, board);
+  //??? if index is in indices, remove value from values
+  return board.map((values, index) => {
+    return values;
+  });
+  //??? generalize below
+}
+
+function removeUnique(unique, indices, board) {
+  //??? remove unique value from all indices cells in board
+  return board;
 }
 
 function setUniques(sectionIndices, board) {
