@@ -185,27 +185,53 @@ function hasSectionUniques(index, sectionIndices, board) {
 }
 
 export function setRowUniques(board) {
-  //??? fix to clear other possibles
-  const uniques = setUniques(rowIndices, board);
-  return uniques; //removeEachPossibles(uniques);
+  //const uniques = findUniques(rowIndices, board);
+
+  return setUniques(rowIndices, board);
 }
 
 export function setColumnUniques(board) {
-  //??? fix to clear other possibles
-  const uniques = setUniques(columnIndices, board);
-  return uniques; //removeEachPossibles(uniques);
+  const uniques = findUniques(columnIndices, board);
+
+  return setUniques(columnIndices, board);
 }
 
 export function setBoxUniques(board) {
-  //??? fix to clear other possibles
-  const uniques = setUniques(boxIndices, board);
-  return uniques; //removeEachPossibles(uniques);
+  return setUniques(boxIndices, board);
 }
 
-function setUniques(sectionIndices, inBoard) {
+function findUniques(sectionIndices, board) {
   const indices = Array.from({ length: 9 }, (_, index) => index);
   const sections = indices.map((index) => {
-    return getSetUniquesSection(index, sectionIndices, inBoard);
+    return findSectionUniques(sectionIndices[index], board);
+  });
+}
+
+function findSectionUniques(indices, board) {
+  const cells = getCells(indices, board);
+  const counts = getValueCounts(cells);
+  const uniques = counts.reduce((uniques, count, index) => {
+    if (count === 1) {
+      const value = index + 1;
+      const cellIndex = indices[index];
+      const unique = {
+        value,
+        cellIndex,
+      };
+      return [...uniques, unique];
+    }
+    return uniques;
+  }, []);
+
+  if (indices.includes(0)) {
+    console.log('SECU', indices, '\nC', counts, '\nU', uniques);
+  }
+}
+
+function setUniques(sectionIndices, board) {
+  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const sections = indices.map((index) => {
+    return getSetUniquesSection(index, sectionIndices, board);
   }).flat();
 
   const sorted = sections.sort((a, b) => a.index - b.index);
