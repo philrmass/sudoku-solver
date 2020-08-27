@@ -79,7 +79,7 @@ export function hasAnyPossibles(board) {
 }
 
 function hasPossibles(sectionIndices, board) {
-  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const indices = getIndices(9);
   return indices.some((index) => {
     return hasSectionPossibles(index, sectionIndices, board);
   });
@@ -122,13 +122,13 @@ function removeAllPossibles(board) {
 }
 
 function removeSectionPossibles(sectionIndices, inBoard) {
-  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const indices = getIndices(9);
   const sections = indices.map((index) => {
     return getNoPossiblesSection(index, sectionIndices, inBoard);
   }).flat();
 
-  const sorted = sections.sort((a, b) => a.index - b.index);
-  return sorted.map((section) => section.values);
+  sections.sort((a, b) => a.index - b.index);
+  return sections.map((section) => section.values);
 }
 
 function getNoPossiblesSection(index, sectionIndices, board) {
@@ -140,6 +140,10 @@ function getNoPossiblesSection(index, sectionIndices, board) {
     ...cell,
     values: removeDones(cell.values, dones),
   }));
+}
+
+function getIndices(count) {
+  return Array.from({ length: count }, (_, index) => index);
 }
 
 function getCells(indices, board) {
@@ -178,7 +182,7 @@ export function hasBoxUniques(board) {
 }
 
 function hasUniques(sectionIndices, board) {
-  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const indices = getIndices(9);
   return indices.some((index) => {
     return hasSectionUniques(index, sectionIndices, board);
   });
@@ -191,32 +195,41 @@ function hasSectionUniques(index, sectionIndices, board) {
   return counts.some((count) => count === 1);
 }
 
-export function setRowUniques(board) {
-  //const uniques = findUniques(rowIndices, board);
+export function setRowUniques(inBoard) {
+  const uniques = findUniques(rowIndices, inBoard).slice(0, 1);
+  console.log('RU', uniques.map(u => `${u.value}, ${u.index}`));
 
-  return setUniques(rowIndices, board);
+  return uniques.reduce((board, unique) => {
+    const hasUnique = setUnique(unique, board);
+    const noColumns = removeUniqueFromColumn(unique, hasUnique);
+    return removeUniqueFromBox(unique, noColumns);
+  }, inBoard);
 }
 
 export function setColumnUniques(inBoard) {
-  const uniques = findUniques(columnIndices, inBoard);
+  const uniques = findUniques(columnIndices, inBoard).slice(0, 1);
+  console.log('CU', uniques);
 
-  const set = uniques.reduce((board, unique) => {
+  return uniques.reduce((board, unique) => {
     const hasUnique = setUnique(unique, board);
     const noRows = removeUniqueFromRow(unique, hasUnique);
     return removeUniqueFromBox(unique, noRows);
   }, inBoard);
-
-  console.log('CUNI', uniques);
-  console.log('SET', set);
-  return set;
 }
 
-export function setBoxUniques(board) {
-  return setUniques(boxIndices, board);
+export function setBoxUniques(inBoard) {
+  const uniques = findUniques(boxIndices, inBoard).slice(0, 1);
+  console.log('BU', uniques);
+
+  return uniques.reduce((board, unique) => {
+    const hasUnique = setUnique(unique, board);
+    const noRows = removeUniqueFromRow(unique, hasUnique);
+    return removeUniqueFromColumn(unique, noRows);
+  }, inBoard);
 }
 
 function findUniques(sectionIndices, board) {
-  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const indices = getIndices(9);
   return indices.map((index) => {
     return findSectionUniques(sectionIndices[index], board);
   }).flat();
@@ -249,7 +262,13 @@ function setUnique(unique, board) {
 function removeUniqueFromRow(unique, board) {
   const rowIndex = cellRowIndices[unique.index];
   const indices = rowIndices[rowIndex];
-  console.log('RI', indices);
+
+  return removeUnique(unique, indices, board);
+}
+
+function removeUniqueFromColumn(unique, board) {
+  const columnIndex = cellColumnIndices[unique.index];
+  const indices = columnIndices[columnIndex];
 
   return removeUnique(unique, indices, board);
 }
@@ -257,7 +276,6 @@ function removeUniqueFromRow(unique, board) {
 function removeUniqueFromBox(unique, board) {
   const boxIndex = cellBoxIndices[unique.index];
   const indices = boxIndices[boxIndex];
-  console.log('BI', indices);
 
   return removeUnique(unique, indices, board);
 }
@@ -272,14 +290,15 @@ function removeUnique(unique, indices, board) {
   });
 }
 
+/*
 function setUniques(sectionIndices, board) {
-  const indices = Array.from({ length: 9 }, (_, index) => index);
+  const indices = getIndices(9);
   const sections = indices.map((index) => {
     return getSetUniquesSection(index, sectionIndices, board);
   }).flat();
 
-  const sorted = sections.sort((a, b) => a.index - b.index);
-  return sorted.map((section) => section.values);
+  sections.sort((a, b) => a.index - b.index);
+  return sections.map((section) => section.values);
 }
 
 function getSetUniquesSection(index, sectionIndices, board) {
@@ -289,6 +308,7 @@ function getSetUniquesSection(index, sectionIndices, board) {
   return setCellUniques(counts, cells);
 }
 
+*/
 function getValueCounts(cells) {
   const values = Array.from({ length: 9 }, (_, index) => index + 1);
   return values.map((value) => {
@@ -303,6 +323,7 @@ function getValueCounts(cells) {
   });
 }
 
+/*
 function setCellUniques(counts, cells) {
   const uniques = counts.reduce((uniques, count, index) => {
     if (count === 1) {
@@ -324,6 +345,7 @@ function setCellUniques(counts, cells) {
   });
 }
 
+*/
 export function hasCellUniques(counts) {
   return counts.some((count) => count === 1);
 }
@@ -338,6 +360,24 @@ export function getActives(lastBoard, board) {
       return lastCell.filter((value) => !cell.includes(value));
     }
     return [];
+  });
+}
+
+export function isValidBoard(board) {
+  const indices = getIndices(9);
+  return indices.every((index) => {
+    return isValidSection(rowIndices[index], board) &&
+    isValidSection(columnIndices[index], board) &&
+    isValidSection(boxIndices[index], board);
+  });
+}
+
+export function isValidSection(indices, board) {
+  const cells = getCells(indices, board);
+  const dones = getDones(cells);
+  dones.sort((a, b) => a - b);
+  return dones.every((done, index) => {
+    return done !== dones[index - 1];
   });
 }
 
