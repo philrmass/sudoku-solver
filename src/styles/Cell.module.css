@@ -29,12 +29,8 @@
   align-items: center;
 }
 
-.active {
-  color: var(--text-active);
-  font-weight: bold;
-}
-
 .removable {
   color: var(--text-removeable);
   font-weight: bold;
+  background: var(--bg-removeable);
 }
