@@ -6,7 +6,16 @@
   padding: var(--space1) 0;
 }
 
-button {
-  margin-right: var(--space0);
-  border-radius: var(--radius);
+.button {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -2px;
+  padding: 1px 3px;
+  border-radius: 25%;
+  background: var(--text-removeable);
+  font-size: var(--possible-size);
 }

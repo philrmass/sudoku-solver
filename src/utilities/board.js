@@ -2,9 +2,6 @@ import {
   rowIndices,
   columnIndices,
   boxIndices,
-  cellRowIndices,
-  cellColumnIndices,
-  cellBoxIndices,
 } from '../data/indices';
 
 export function getAllMoves(board) {
@@ -13,20 +10,28 @@ export function getAllMoves(board) {
   }
 
   const noRowPossibles = removeRowPossibles(board);
-  const noColumnPossibles = removeColumnPossibles(board);
-  const noBoxPossibles = removeBoxPossibles(board);
-  const noPossibles = removeAllPossibles(board); 
-  const noRowUniques = setRowUniques(board);
-  const noColumnUniques = setColumnUniques(board);
-  const noBoxUniques = setBoxUniques(board);
-
   const rowPossibles = getBoardDiff(board, noRowPossibles);
+
+  const noColumnPossibles = removeColumnPossibles(board);
   const columnPossibles = getBoardDiff(board, noColumnPossibles);
+
+  const noBoxPossibles = removeBoxPossibles(board);
   const boxPossibles = getBoardDiff(board, noBoxPossibles);
+
+  const noPossibles = removeAllPossibles(board); 
   const allPossibles = getBoardDiff(board, noPossibles);
+
+  const noRowUniques = setRowUniques(board);
   const rowUniques = getBoardDiff(board, noRowUniques);
+
+  const noColumnUniques = setColumnUniques(board);
   const columnUniques = getBoardDiff(board, noColumnUniques);
+
+  const noBoxUniques = setBoxUniques(board);
   const boxUniques = getBoardDiff(board, noBoxUniques);
+
+  const noRowBoxIntersections = removeRowBoxIntersections(board);
+  const rowBoxIntersections = getBoardDiff(board, noRowBoxIntersections);
 
   return {
     rowPossibles,
@@ -36,6 +41,7 @@ export function getAllMoves(board) {
     rowUniques,
     columnUniques,
     boxUniques,
+    rowBoxIntersections,
   };
 }
 
@@ -60,19 +66,19 @@ export function removePossibles(board, possibles) {
   });
 }
 
-export function hasRowPossibles(board) {
+function hasRowPossibles(board) {
   return hasPossibles(rowIndices, board);
 }
 
-export function hasColumnPossibles(board) {
+function hasColumnPossibles(board) {
   return hasPossibles(columnIndices, board);
 }
 
-export function hasBoxPossibles(board) {
+function hasBoxPossibles(board) {
   return hasPossibles(boxIndices, board);
 }
 
-export function hasAnyPossibles(board) {
+function hasAnyPossibles(board) {
   return hasRowPossibles(board) ||
     hasColumnPossibles(board) ||
     hasBoxPossibles(board);
@@ -81,12 +87,11 @@ export function hasAnyPossibles(board) {
 function hasPossibles(sectionIndices, board) {
   const indices = getIndices(9);
   return indices.some((index) => {
-    return hasSectionPossibles(index, sectionIndices, board);
+    return hasSectionPossibles(sectionIndices[index], board);
   });
 }
 
-function hasSectionPossibles(index, sectionIndices, board) {
-  const indices = sectionIndices[index];
+function hasSectionPossibles(indices, board) {
   const cells = getCells(indices, board);
   const dones = getDones(cells);
   return cells.some((cell) => hasCellPossibles(cell, dones));
@@ -124,15 +129,14 @@ function removeAllPossibles(board) {
 function removeSectionPossibles(sectionIndices, inBoard) {
   const indices = getIndices(9);
   const sections = indices.map((index) => {
-    return getNoPossiblesSection(index, sectionIndices, inBoard);
+    return getNoPossiblesSection(sectionIndices[index], inBoard);
   }).flat();
 
   sections.sort((a, b) => a.index - b.index);
   return sections.map((section) => section.values);
 }
 
-function getNoPossiblesSection(index, sectionIndices, board) {
-  const indices = sectionIndices[index];
+function getNoPossiblesSection(indices, board) {
   const cells = getCells(indices, board);
   const dones = getDones(cells);
 
@@ -169,146 +173,59 @@ function removeDones(values, dones) {
   return values;
 }
 
-export function hasRowUniques(board) {
+function hasRowUniques(board) {
   return hasUniques(rowIndices, board);
 }
 
-export function hasColumnUniques(board) {
+function hasColumnUniques(board) {
   return hasUniques(columnIndices, board);
 }
 
-export function hasBoxUniques(board) {
+function hasBoxUniques(board) {
   return hasUniques(boxIndices, board);
 }
 
 function hasUniques(sectionIndices, board) {
   const indices = getIndices(9);
   return indices.some((index) => {
-    return hasSectionUniques(index, sectionIndices, board);
+    return hasSectionUniques(sectionIndices[index], board);
   });
 }
 
-function hasSectionUniques(index, sectionIndices, board) {
-  const indices = sectionIndices[index];
+function hasSectionUniques(indices, board) {
   const cells = getCells(indices, board);
   const counts = getValueCounts(cells);
   return counts.some((count) => count === 1);
 }
 
-export function setRowUniques(inBoard) {
-  const uniques = findUniques(rowIndices, inBoard).slice(0, 1);
-  console.log('RU', uniques.map(u => `${u.value}, ${u.index}`));
-
-  return uniques.reduce((board, unique) => {
-    const hasUnique = setUnique(unique, board);
-    const noColumns = removeUniqueFromColumn(unique, hasUnique);
-    return removeUniqueFromBox(unique, noColumns);
-  }, inBoard);
+function setRowUniques(board) {
+  return setUniques(rowIndices, board);
 }
 
-export function setColumnUniques(inBoard) {
-  const uniques = findUniques(columnIndices, inBoard).slice(0, 1);
-  console.log('CU', uniques);
-
-  return uniques.reduce((board, unique) => {
-    const hasUnique = setUnique(unique, board);
-    const noRows = removeUniqueFromRow(unique, hasUnique);
-    return removeUniqueFromBox(unique, noRows);
-  }, inBoard);
+function setColumnUniques(board) {
+  return setUniques(columnIndices, board);
 }
 
-export function setBoxUniques(inBoard) {
-  const uniques = findUniques(boxIndices, inBoard).slice(0, 1);
-  console.log('BU', uniques);
-
-  return uniques.reduce((board, unique) => {
-    const hasUnique = setUnique(unique, board);
-    const noRows = removeUniqueFromRow(unique, hasUnique);
-    return removeUniqueFromColumn(unique, noRows);
-  }, inBoard);
+function setBoxUniques(board) {
+  return setUniques(boxIndices, board);
 }
 
-function findUniques(sectionIndices, board) {
-  const indices = getIndices(9);
-  return indices.map((index) => {
-    return findSectionUniques(sectionIndices[index], board);
-  }).flat();
-}
-
-function findSectionUniques(indices, board) {
-  const cells = getCells(indices, board);
-  const counts = getValueCounts(cells);
-  return counts.reduce((uniques, count, index) => {
-    if (count === 1) {
-      const value = index + 1;
-      const cell = cells.find((cell) => cell.values.includes(value));
-      const unique = {
-        value,
-        index: cell.index,
-      };
-      return [...uniques, unique];
-    }
-    return uniques;
-  }, []);
-}
-
-function setUnique(unique, board) {
-  const start = board.slice(0, unique.index);
-  const cell = [unique.value];
-  const end = board.slice(unique.index + 1);
-  return [...start, cell, ...end];
-}
-
-function removeUniqueFromRow(unique, board) {
-  const rowIndex = cellRowIndices[unique.index];
-  const indices = rowIndices[rowIndex];
-
-  return removeUnique(unique, indices, board);
-}
-
-function removeUniqueFromColumn(unique, board) {
-  const columnIndex = cellColumnIndices[unique.index];
-  const indices = columnIndices[columnIndex];
-
-  return removeUnique(unique, indices, board);
-}
-
-function removeUniqueFromBox(unique, board) {
-  const boxIndex = cellBoxIndices[unique.index];
-  const indices = boxIndices[boxIndex];
-
-  return removeUnique(unique, indices, board);
-}
-
-function removeUnique(unique, indices, board) {
-  return board.map((values, index) => {
-    const isInSection = indices.includes(index);
-    if (isInSection && values.length > 1) {
-      return values.filter((value) => value !== unique.value);
-    }
-    return values;
-  });
-}
-
-/*
 function setUniques(sectionIndices, board) {
   const indices = getIndices(9);
   const sections = indices.map((index) => {
-    return getSetUniquesSection(index, sectionIndices, board);
+    return getSetUniquesSection(sectionIndices[index], board);
   }).flat();
 
   sections.sort((a, b) => a.index - b.index);
   return sections.map((section) => section.values);
 }
 
-function getSetUniquesSection(index, sectionIndices, board) {
-  const indices = sectionIndices[index];
+function getSetUniquesSection(indices, board) {
   const cells = getCells(indices, board);
   const counts = getValueCounts(cells);
   return setCellUniques(counts, cells);
 }
 
-*/
 function getValueCounts(cells) {
   const values = Array.from({ length: 9 }, (_, index) => index + 1);
   return values.map((value) => {
@@ -323,7 +240,6 @@ function getValueCounts(cells) {
   });
 }
 
-/*
 function setCellUniques(counts, cells) {
   const uniques = counts.reduce((uniques, count, index) => {
     if (count === 1) {
@@ -345,22 +261,9 @@ function setCellUniques(counts, cells) {
   });
 }
 
-*/
-export function hasCellUniques(counts) {
-  return counts.some((count) => count === 1);
-}
-
-export function getActives(lastBoard, board) {
-  return board.map((cell, index) => {
-    const lastCell = lastBoard[index];
-    if (lastCell.length > cell.length) {
-      if (cell.length === 1) {
-        return cell;
-      }
-      return lastCell.filter((value) => !cell.includes(value));
-    }
-    return [];
-  });
+function removeRowBoxIntersections(board) {
+  console.log('RRBI');
+  return board;
 }
 
 export function isValidBoard(board) {
@@ -372,7 +275,7 @@ export function isValidBoard(board) {
   });
 }
 
-export function isValidSection(indices, board) {
+function isValidSection(indices, board) {
   const cells = getCells(indices, board);
   const dones = getDones(cells);
   dones.sort((a, b) => a - b);
@@ -409,6 +312,14 @@ export function solve(board) {
   }
 
   return removed;
+}
+
+export function getPossiblesCount(board) {
+  if (board) {
+    return board.reduce((cnt, cell) => cnt + cell.length, 0);
+  }
+
+  return 0;
 }
 
 export function getAveragePossibles(board) {

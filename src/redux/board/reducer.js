@@ -9,14 +9,13 @@ import {
   SET_REMOVABLES,
   REMOVE_POSSIBLES,
   SOLVE_CURRENT,
-  CLEAR_ACTIVES,
 } from './actions';
 
 const defaultState = {
   current: null,
-  actives: null,
+  removablesName: '',
   removables: null,
-  rowPossibles: null,
+  moves: {},
 };
 
 export default function boardReducer(state = defaultState, action) {
@@ -26,13 +25,16 @@ export default function boardReducer(state = defaultState, action) {
       return {
         ...state,
         current: action.board,
+        moves,
         ...moves,
       };
     }
     case SET_REMOVABLES: {
+      const removables = state.moves[action.name] || null;
       return {
         ...state,
-        removables: action.values,
+        removablesName: action.name,
+        removables,
       };
     }
     case REMOVE_POSSIBLES: {
@@ -41,7 +43,9 @@ export default function boardReducer(state = defaultState, action) {
       return {
         ...state,
         current,
+        removablesName: '',
         removables: null,
+        moves,
         ...moves,
       };
     }
@@ -52,11 +56,6 @@ export default function boardReducer(state = defaultState, action) {
         current,
       };
     }
-    case CLEAR_ACTIVES:
-      return {
-        ...state,
-        actives: null,
-      };
     default:
       return state;
   }

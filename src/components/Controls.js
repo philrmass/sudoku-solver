@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -6,7 +6,6 @@ import {
   setRemovables,
   removePossibles,
   solveCurrent,
-  clearActives,
 } from '../redux/board/actions';
 import {
   selectPuzzle,
@@ -15,41 +14,33 @@ import {
 import styles from '../styles/Controls.module.css';
 
 import {
+  getPossiblesCount,
   isSolved,
 } from '../utilities/board';
 
 function Controls({
   board,
-  actives,
-  rowPossibles,
-  columnPossibles,
-  boxPossibles,
-  allPossibles,
-  rowUniques,
-  columnUniques,
-  boxUniques,
+  moves,
+  removables,
+  removablesName,
   index,
   setRemovables,
   removePossibles,
   solveCurrent,
-  clearActives,
   selectPuzzle,
   solveAllPuzzles,
 }) {
-  console.log('\nRP', rowPossibles && rowPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('CP', columnPossibles && columnPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('BP', boxPossibles && boxPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('AP', allPossibles && allPossibles.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('RU', rowUniques && rowUniques.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('CU', columnUniques && columnUniques.reduce((cnt, cell) => cnt + cell.length, 0));
-  console.log('BU', boxUniques && boxUniques.reduce((cnt, cell) => cnt + cell.length, 0));
-
-  useEffect(() => {
-    if (actives) {
-      const timeout = setTimeout(clearActives, 700);
-      return () => clearTimeout(timeout);
+  function buildBadge(name) {
+    if (name !== removablesName) {
+      return null;
     }
-  }, [actives]);
+
+    return (
+      <div className={styles.badge}>
+        {getPossiblesCount(removables)}
+      </div>
+    );
+  }
 
   function buildPossibles() {
     return (
@@ -59,35 +50,43 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!rowPossibles}
-            onMouseEnter={() => setRemovables(rowPossibles)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(rowPossibles)}
+            className={styles.button}
+            disabled={!moves.rowPossibles}
+            onMouseOver={() => setRemovables('rowPossibles')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.rowPossibles)}
           >
+            {buildBadge('rowPossibles')}
             Row
           </button>
           <button
-            disabled={!columnPossibles}
-            onMouseEnter={() => setRemovables(columnPossibles)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(columnPossibles)}
+            className={styles.button}
+            disabled={!moves.columnPossibles}
+            onMouseOver={() => setRemovables('columnPossibles')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.columnPossibles)}
           >
+            {buildBadge('columnPossibles')}
             Column
           </button>
           <button
-            disabled={!boxPossibles}
-            onMouseEnter={() => setRemovables(boxPossibles)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(boxPossibles)}
+            className={styles.button}
+            disabled={!moves.boxPossibles}
+            onMouseOver={() => setRemovables('boxPossibles')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.boxPossibles)}
           >
+            {buildBadge('boxPossibles')}
             Box
           </button>
           <button
-            disabled={!allPossibles}
-            onMouseEnter={() => setRemovables(allPossibles)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(allPossibles)}
+            className={styles.button}
+            disabled={!moves.allPossibles}
+            onMouseOver={() => setRemovables('allPossibles')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.allPossibles)}
           >
+            {buildBadge('allPossibles')}
             All
           </button>
         </div>
@@ -103,27 +102,33 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={!rowUniques}
-            onMouseEnter={() => setRemovables(rowUniques)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(rowUniques)}
+            className={styles.button}
+            disabled={moves.allPossibles || !moves.rowUniques}
+            onMouseOver={() => setRemovables('rowUniques')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.rowUniques)}
           >
+            {buildBadge('rowUniques')}
             Row
           </button>
           <button
-            disabled={!columnUniques}
-            onMouseEnter={() => setRemovables(columnUniques)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(columnUniques)}
+            className={styles.button}
+            disabled={moves.allPossibles || !moves.columnUniques}
+            onMouseOver={() => setRemovables('columnUniques')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.columnUniques)}
           >
+            {buildBadge('columnUniques')}
             Column
           </button>
           <button
-            disabled={!boxUniques}
-            onMouseEnter={() => setRemovables(boxUniques)}
-            onMouseLeave={() => setRemovables(null)}
-            onClick={() => removePossibles(boxUniques)}
+            className={styles.button}
+            disabled={moves.allPossibles || !moves.boxUniques}
+            onMouseOver={() => setRemovables('boxUniques')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.boxUniques)}
           >
+            {buildBadge('boxUniques')}
             Box
           </button>
         </div>
@@ -139,7 +144,11 @@ function Controls({
         </div>
         <div className={styles.buttons}>
           <button
-            disabled={true}
+            className={styles.button}
+            disabled={moves.allPossibles || !moves.rowBoxIntersections}
+            onMouseOver={() => setRemovables('rowBoxIntersections')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.rowBoxIntersections)}
           >
             Row-Box
           </button>
@@ -189,33 +198,22 @@ function Controls({
 
 Controls.propTypes = {
   board: PropTypes.array.isRequired,
-  actives: PropTypes.array,
-  rowPossibles: PropTypes.array,
-  columnPossibles: PropTypes.array,
-  boxPossibles: PropTypes.array,
-  allPossibles: PropTypes.array,
-  rowUniques: PropTypes.array,
-  columnUniques: PropTypes.array,
-  boxUniques: PropTypes.array,
+  moves: PropTypes.objectOf(PropTypes.array).isRequired,
+  removables: PropTypes.array,
+  removablesName: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   setRemovables: PropTypes.func.isRequired,
   removePossibles: PropTypes.func.isRequired,
   solveCurrent: PropTypes.func.isRequired,
-  clearActives: PropTypes.func.isRequired,
   selectPuzzle: PropTypes.func.isRequired,
   solveAllPuzzles: PropTypes.func.isRequired,
 };
 
 const mapState = (state) => ({
   board: state.board.current,
-  actives: state.board.actives,
-  rowPossibles: state.board.rowPossibles,
-  columnPossibles: state.board.columnPossibles,
-  boxPossibles: state.board.boxPossibles,
-  allPossibles: state.board.allPossibles,
-  rowUniques: state.board.rowUniques,
-  columnUniques: state.board.columnUniques,
-  boxUniques: state.board.boxUniques,
+  moves: state.board.moves,
+  removables: state.board.removables,
+  removablesName: state.board.removablesName,
   index: state.puzzles.index,
 });
 
@@ -223,7 +221,6 @@ const mapDispatch = {
   setRemovables,
   removePossibles,
   solveCurrent,
-  clearActives,
   selectPuzzle,
   solveAllPuzzles,
 };

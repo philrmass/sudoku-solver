@@ -28,4 +28,9 @@ module.exports = {
     'react/prop-types': 'warn',
     'semi': ['warn', 'always'],
   },
+  'settings': {
+    'react': {
+      'version': 'detect',
+    },
+  },
 };
