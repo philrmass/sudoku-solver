@@ -262,7 +262,18 @@ function setCellUniques(counts, cells) {
 }
 
 function removeRowBoxIntersections(board) {
-  console.log('RRBI');
+  const indices = getIndices(9);
+  indices.map((rowIndex) => {
+    const rowCells = getCells(rowIndices[rowIndex], board);
+    console.log(rowCells);
+    indices.map((boxIndex) => {
+      console.log(`ROW ${rowIndex}, BOX ${boxIndex}`);
+      const boxCells = getCells(boxIndices[boxIndex], board);
+      //??? has intersection?
+      //??? print row else, intersection, box else
+    });
+  });
+
   return board;
 }
 
