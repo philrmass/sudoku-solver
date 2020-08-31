@@ -2,6 +2,8 @@ import {
   rowIndices,
   columnIndices,
   boxIndices,
+  rowBoxIntersections,
+  columnBoxIntersections,
 } from '../data/indices';
 
 export function getAllMoves(board) {
@@ -33,6 +35,9 @@ export function getAllMoves(board) {
   const noRowBoxIntersections = removeRowBoxIntersections(board);
   const rowBoxIntersections = getBoardDiff(board, noRowBoxIntersections);
 
+  const noColumnBoxIntersections = removeColumnBoxIntersections(board);
+  const columnBoxIntersections = getBoardDiff(board, noColumnBoxIntersections);
+
   return {
     rowPossibles,
     columnPossibles,
@@ -42,6 +47,7 @@ export function getAllMoves(board) {
     columnUniques,
     boxUniques,
     rowBoxIntersections,
+    columnBoxIntersections,
   };
 }
 
@@ -262,18 +268,32 @@ function setCellUniques(counts, cells) {
 }
 
 function removeRowBoxIntersections(board) {
-  const indices = getIndices(9);
-  indices.map((rowIndex) => {
-    const rowCells = getCells(rowIndices[rowIndex], board);
-    console.log(rowCells);
-    indices.map((boxIndex) => {
-      console.log(`ROW ${rowIndex}, BOX ${boxIndex}`);
-      const boxCells = getCells(boxIndices[boxIndex], board);
-      //??? has intersection?
-      //??? print row else, intersection, box else
-    });
-  });
+  return removeSectionBoxIntersections(rowBoxIntersections, board);
+}
 
+function removeColumnBoxIntersections(board) {
+  return removeSectionBoxIntersections(columnBoxIntersections, board);
+}
+
+function removeSectionBoxIntersections(intersections, board) {
+  const indices = getIndices(27);
+  const removes = indices.reduce((removes, index) => {
+    const data = intersections[index];
+    const section = getCells(data[0], board);
+    const box = getCells(data[1], board);
+    const intersection = getCells(data[2], board);
+
+    console.log(section, box, intersection);
+    // reduce all intersection values
+    // if in section but not box, or vice versa, remove from the other
+    // return the value and index to remove
+    // return { index, value }
+
+    return removes;
+  }, []);
+
+  console.log('REM', removes);
+  // remove all from board
   return board;
 }
 
