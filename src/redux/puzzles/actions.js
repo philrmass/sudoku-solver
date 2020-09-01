@@ -26,6 +26,6 @@ export function solveAllPuzzles() {
   };
 }
 
-function inRange(value, min , max) {
+function inRange(value, min, max) {
   return Math.min(Math.max(min, value), max);
 }

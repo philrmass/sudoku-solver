@@ -3,7 +3,7 @@ import {
   columnIndices,
   boxIndices,
   rowBoxIntersections,
-  columnBoxIntersections,
+  //columnBoxIntersections,
 } from '../data/indices';
 
 export function getAllMoves(board) {
@@ -35,8 +35,10 @@ export function getAllMoves(board) {
   const noRowBoxIntersections = removeRowBoxIntersections(board);
   const rowBoxIntersections = getBoardDiff(board, noRowBoxIntersections);
 
+  /*
   const noColumnBoxIntersections = removeColumnBoxIntersections(board);
   const columnBoxIntersections = getBoardDiff(board, noColumnBoxIntersections);
+  */
 
   return {
     rowPossibles,
@@ -47,7 +49,7 @@ export function getAllMoves(board) {
     columnUniques,
     boxUniques,
     rowBoxIntersections,
-    columnBoxIntersections,
+    //columnBoxIntersections,
   };
 }
 
@@ -271,10 +273,13 @@ function removeRowBoxIntersections(board) {
   return removeSectionBoxIntersections(rowBoxIntersections, board);
 }
 
+//??? restore 
+/*
 function removeColumnBoxIntersections(board) {
   return removeSectionBoxIntersections(columnBoxIntersections, board);
 }
 
+*/
 function removeSectionBoxIntersections(intersections, board) {
   const indices = getIndices(27);
   const removes = indices.reduce((removes, index) => {
@@ -283,18 +288,68 @@ function removeSectionBoxIntersections(intersections, board) {
     const box = getCells(data[1], board);
     const intersection = getCells(data[2], board);
 
-    console.log(section, box, intersection);
-    // reduce all intersection values
-    // if in section but not box, or vice versa, remove from the other
-    // return the value and index to remove
-    // return { index, value }
+    const sValues = getValues(section);
+    const bValues = getValues(box);
+    const iValues = getValues(intersection);
 
-    return removes;
+    const exclusives = iValues.filter((value) => {
+      const inSection = sValues.includes(value);
+      const inBox = bValues.includes(value);
+      return (inSection !== inBox);
+    });
+
+    const sectionRemoves = getRemoves(section, exclusives);
+    const boxRemoves = getRemoves(box, exclusives);
+
+    if (sectionRemoves.length > 0 || boxRemoves.length > 0) {
+      console.log('INTERSECTION', index);
+      if (sectionRemoves.length > 0) {
+        console.log(' SR', sectionRemoves);
+      }
+      if (boxRemoves.length > 0) {
+        console.log(' BR', boxRemoves);
+      }
+    }
+
+    return [...removes, ...sectionRemoves, ...boxRemoves];
   }, []);
 
+  const rBoard = board.map((values, index) => {
+    //??? values.filter((value) => {
+    //  go through all removes, remove any values with matching index
+    //});
+    //console.log('C', index, values);
+  });
+  //??? restore 
+  // remove all from board with map && includes
   console.log('REM', removes);
-  // remove all from board
+
   return board;
+}
+
+function getValues(cells) {
+  return cells.reduce((values, cell) => {
+    if (cell.values.length > 1) {
+      const uniques = cell.values.filter((value) => !values.includes(value));
+      return [...values, ...uniques];
+    }
+    return values;
+  }, []);
+}
+
+function getRemoves(cells, exclusives) {
+  return exclusives.map((exclusive) => {
+    return cells.reduce((removes, cell) => {
+      if (cell.values.includes(exclusive)) {
+        const remove = {
+          index: cell.index,
+          value: exclusive,
+        };
+        return [...removes, remove];
+      }
+      return removes;
+    }, []);
+  }).flat();
 }
 
 export function isValidBoard(board) {
