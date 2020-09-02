@@ -150,11 +150,17 @@ function Controls({
             onMouseLeave={() => setRemovables('')}
             onClick={() => removePossibles(moves.rowBoxIntersections)}
           >
+            {buildBadge('rowBoxIntersections')}
             Row-Box
           </button>
           <button
-            disabled={true}
+            className={styles.button}
+            disabled={moves.allPossibles || !moves.columnBoxIntersections}
+            onMouseOver={() => setRemovables('columnBoxIntersections')}
+            onMouseLeave={() => setRemovables('')}
+            onClick={() => removePossibles(moves.columnBoxIntersections)}
           >
+            {buildBadge('columnBoxIntersections')}
             Column-Box
           </button>
         </div>

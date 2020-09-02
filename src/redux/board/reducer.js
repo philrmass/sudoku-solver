@@ -26,7 +26,6 @@ export default function boardReducer(state = defaultState, action) {
         ...state,
         current: action.board,
         moves,
-        ...moves,
       };
     }
     case SET_REMOVABLES: {
@@ -46,14 +45,15 @@ export default function boardReducer(state = defaultState, action) {
         removablesName: '',
         removables: null,
         moves,
-        ...moves,
       };
     }
     case SOLVE_CURRENT: {
       const current = solve(state.current);
+      const moves = getAllMoves(current);
       return {
         ...state,
         current,
+        moves,
       };
     }
     default:

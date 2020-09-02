@@ -3,7 +3,7 @@ import {
   columnIndices,
   boxIndices,
   rowBoxIntersections,
-  //columnBoxIntersections,
+  columnBoxIntersections,
 } from '../data/indices';
 
 export function getAllMoves(board) {
@@ -35,10 +35,8 @@ export function getAllMoves(board) {
   const noRowBoxIntersections = removeRowBoxIntersections(board);
   const rowBoxIntersections = getBoardDiff(board, noRowBoxIntersections);
 
-  /*
   const noColumnBoxIntersections = removeColumnBoxIntersections(board);
   const columnBoxIntersections = getBoardDiff(board, noColumnBoxIntersections);
-  */
 
   return {
     rowPossibles,
@@ -49,7 +47,7 @@ export function getAllMoves(board) {
     columnUniques,
     boxUniques,
     rowBoxIntersections,
-    //columnBoxIntersections,
+    columnBoxIntersections,
   };
 }
 
@@ -270,23 +268,22 @@ function setCellUniques(counts, cells) {
 }
 
 function removeRowBoxIntersections(board) {
+  console.log('ROW-BOX');
   return removeSectionBoxIntersections(rowBoxIntersections, board);
 }
 
-//??? restore 
-/*
 function removeColumnBoxIntersections(board) {
+  console.log('COL-BOX');
   return removeSectionBoxIntersections(columnBoxIntersections, board);
 }
 
-*/
-function removeSectionBoxIntersections(intersections, board) {
+function removeSectionBoxIntersections(intersections, inBoard) {
   const indices = getIndices(27);
   const removes = indices.reduce((removes, index) => {
     const data = intersections[index];
-    const section = getCells(data[0], board);
-    const box = getCells(data[1], board);
-    const intersection = getCells(data[2], board);
+    const section = getCells(data[0], inBoard);
+    const box = getCells(data[1], inBoard);
+    const intersection = getCells(data[2], inBoard);
 
     const sValues = getValues(section);
     const bValues = getValues(box);
@@ -302,29 +299,28 @@ function removeSectionBoxIntersections(intersections, board) {
     const boxRemoves = getRemoves(box, exclusives);
 
     if (sectionRemoves.length > 0 || boxRemoves.length > 0) {
-      console.log('INTERSECTION', index);
+      console.log(' INTERSECTION', index);
       if (sectionRemoves.length > 0) {
-        console.log(' SR', sectionRemoves);
+        console.log('  SR', sectionRemoves.map((r) => `[${r.index}] ${r.value}`).join(', '));
       }
       if (boxRemoves.length > 0) {
-        console.log(' BR', boxRemoves);
+        console.log('  SR', boxRemoves.map((r) => `[${r.index}] ${r.value}`).join(', '));
       }
     }
 
     return [...removes, ...sectionRemoves, ...boxRemoves];
   }, []);
 
-  const rBoard = board.map((values, index) => {
-    //??? values.filter((value) => {
-    //  go through all removes, remove any values with matching index
-    //});
-    //console.log('C', index, values);
-  });
-  //??? restore 
-  // remove all from board with map && includes
-  console.log('REM', removes);
+  const rBoard = removes.reduce((board, remove) => {
+    const before = board.slice(0, remove.index);
+    const after = board.slice(remove.index + 1);
+    const cell = board[remove.index];
+    const removed = cell.filter((value) => value !== remove.value);
 
-  return board;
+    return [...before, removed, ...after];
+  }, inBoard);
+
+  return rBoard;
 }
 
 function getValues(cells) {
