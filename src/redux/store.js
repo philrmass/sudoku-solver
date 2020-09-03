@@ -16,6 +16,6 @@ const store = createStore(
   applyMiddleware(thunk),
 );
 
-store.dispatch(selectPuzzle(5));
+store.dispatch(selectPuzzle(24));
 
 export default store;

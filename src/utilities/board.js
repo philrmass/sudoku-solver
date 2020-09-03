@@ -267,19 +267,40 @@ function setCellUniques(counts, cells) {
   });
 }
 
+function hasRowBoxIntersections(board) {
+  const removes = getSectionBoxRemoves(rowBoxIntersections, board);
+  return removes.length > 0;
+}
+
+function hasColumnBoxIntersections(board) {
+  const removes = getSectionBoxRemoves(columnBoxIntersections, board);
+  return removes.length > 0;
+}
+
 function removeRowBoxIntersections(board) {
-  console.log('ROW-BOX');
   return removeSectionBoxIntersections(rowBoxIntersections, board);
 }
 
 function removeColumnBoxIntersections(board) {
-  console.log('COL-BOX');
   return removeSectionBoxIntersections(columnBoxIntersections, board);
 }
 
 function removeSectionBoxIntersections(intersections, inBoard) {
+  const removes = getSectionBoxRemoves(intersections, inBoard);
+
+  return removes.reduce((board, remove) => {
+    const before = board.slice(0, remove.index);
+    const after = board.slice(remove.index + 1);
+    const cell = board[remove.index];
+    const removed = cell.filter((value) => value !== remove.value);
+
+    return [...before, removed, ...after];
+  }, inBoard);
+}
+
+function getSectionBoxRemoves(intersections, inBoard) {
   const indices = getIndices(27);
-  const removes = indices.reduce((removes, index) => {
+  return indices.reduce((removes, index) => {
     const data = intersections[index];
     const section = getCells(data[0], inBoard);
     const box = getCells(data[1], inBoard);
@@ -298,29 +319,8 @@ function removeSectionBoxIntersections(intersections, inBoard) {
     const sectionRemoves = getRemoves(section, exclusives);
     const boxRemoves = getRemoves(box, exclusives);
 
-    if (sectionRemoves.length > 0 || boxRemoves.length > 0) {
-      console.log(' INTERSECTION', index);
-      if (sectionRemoves.length > 0) {
-        console.log('  SR', sectionRemoves.map((r) => `[${r.index}] ${r.value}`).join(', '));
-      }
-      if (boxRemoves.length > 0) {
-        console.log('  SR', boxRemoves.map((r) => `[${r.index}] ${r.value}`).join(', '));
-      }
-    }
-
     return [...removes, ...sectionRemoves, ...boxRemoves];
   }, []);
-
-  const rBoard = removes.reduce((board, remove) => {
-    const before = board.slice(0, remove.index);
-    const after = board.slice(remove.index + 1);
-    const cell = board[remove.index];
-    const removed = cell.filter((value) => value !== remove.value);
-
-    return [...before, removed, ...after];
-  }, inBoard);
-
-  return rBoard;
 }
 
 function getValues(cells) {
@@ -366,6 +366,23 @@ function isValidSection(indices, board) {
   });
 }
 
+export function getPossiblesCount(board) {
+  if (board) {
+    return board.reduce((cnt, cell) => cnt + cell.length, 0);
+  }
+
+  return 0;
+}
+
+export function getAveragePossibles(board) {
+  const total = board.reduce((average, cell) => {
+    return average + cell.length;
+  }, 0);
+  const average = total / board.length;
+
+  return Math.round(100 * average) / 100;
+}
+
 export function isSolved(board) {
   return board.every((cell) => cell.length === 1);
 }
@@ -390,25 +407,120 @@ export function solve(board) {
     } else if (hasBoxUniques(removed)) {
       removed = setBoxUniques(removed);
       hasChanged = true;
+    } else if (hasRowBoxIntersections(removed)) {
+      removed = removeRowBoxIntersections(removed);
+      hasChanged = true;
+    } else if (hasColumnBoxIntersections(removed)) {
+      removed = removeColumnBoxIntersections(removed);
+      hasChanged = true;
     }
   }
 
   return removed;
 }
 
-export function getPossiblesCount(board) {
-  if (board) {
-    return board.reduce((cnt, cell) => cnt + cell.length, 0);
+export function getSolveData(inBoard) {
+  const begin = Date.now();
+  let board = inBoard;
+  let hasChanged = true;
+  let steps = [];
+
+  while (hasChanged) {
+    hasChanged = false;
+    let removedPossibles = true;
+
+    while (removedPossibles) {
+      removedPossibles = false;
+      const start = getPossiblesCount(board);
+
+      const row = removeRowPossibles(board);
+      const rowCount = getPossiblesCount(row);
+      const rowDiff = start - rowCount;
+
+      const column = removeColumnPossibles(board);
+      const columnCount = getPossiblesCount(column);
+      const columnDiff = start - columnCount;
+
+      const box = removeBoxPossibles(board);
+      const boxCount = getPossiblesCount(box);
+      const boxDiff = start - boxCount;
+
+      const max = Math.max(rowDiff, columnDiff, boxDiff);
+
+      if (max > 0) {
+        removedPossibles = true;
+        hasChanged = true;
+
+        if (max === rowDiff) {
+          board = row;
+          steps = [...steps, getSolveStep('p', 'r', rowCount, rowDiff)];
+        } else if (max === columnDiff) {
+          board = column;
+          steps = [...steps, getSolveStep('p', 'c', columnCount, columnDiff)];
+        } else {
+          board = box;
+          steps = [...steps, getSolveStep('p', 'b', boxCount, boxDiff)];
+        }
+      }
+    }
+
+    const start = getPossiblesCount(board);
+
+    const row = setRowUniques(board);
+    const rowCount = getPossiblesCount(row);
+    const rowDiff = start - rowCount;
+
+    const column = setColumnUniques(board);
+    const columnCount = getPossiblesCount(column);
+    const columnDiff = start - columnCount;
+
+    const box = setBoxUniques(board);
+    const boxCount = getPossiblesCount(box);
+    const boxDiff = start - boxCount;
+
+    const max = Math.max(rowDiff, columnDiff, boxDiff);
+
+    if (max > 0) {
+      hasChanged = true;
+
+      if (max === rowDiff) {
+        board = row;
+        steps = [...steps, getSolveStep('u', 'r', rowCount, rowDiff)];
+      } else if (max === columnDiff) {
+        board = column;
+        steps = [...steps, getSolveStep('u', 'c', columnCount, columnDiff)];
+      } else {
+        board = box;
+        steps = [...steps, getSolveStep('u', 'b', boxCount, boxDiff)];
+      }
+    } else {
+      //??? check intersections
+    }
   }
 
-  return 0;
+  console.log('TIME', Date.now() - begin);
+  return steps;
 }
 
-export function getAveragePossibles(board) {
-  const total = board.reduce((average, cell) => {
-    return average + cell.length;
-  }, 0);
-  const average = total / board.length;
+function getSolveStep(stepLetter, typeLetter, total, removed) {
+  const steps = {
+    p: 'possibles',
+    u: 'uniques',
+    i: 'intersections',
+  };
+  const types = {
+    r: 'row',
+    c: 'column',
+    b: 'box',
+  };
+  const step = steps[stepLetter];
+  const type = types[typeLetter];
+  const remaining = total - 81;
 
-  return Math.round(100 * average) / 100;
+  return {
+    step,
+    type,
+    removed,
+    remaining,
+  };
 }
