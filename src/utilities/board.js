@@ -374,15 +374,6 @@ export function getPossiblesCount(board) {
   return 0;
 }
 
-export function getAveragePossibles(board) {
-  const total = board.reduce((average, cell) => {
-    return average + cell.length;
-  }, 0);
-  const average = total / board.length;
-
-  return Math.round(100 * average) / 100;
-}
-
 export function isSolved(board) {
   return board.every((cell) => cell.length === 1);
 }
@@ -419,8 +410,7 @@ export function solve(board) {
   return removed;
 }
 
-export function getSolveData(inBoard) {
-  const begin = Date.now();
+export function getSolveSteps(inBoard) {
   let board = inBoard;
   let hasChanged = true;
   let steps = [];
@@ -494,33 +484,77 @@ export function getSolveData(inBoard) {
         steps = [...steps, getSolveStep('u', 'b', boxCount, boxDiff)];
       }
     } else {
-      //??? check intersections
+      const start = getPossiblesCount(board);
+
+      const rowBox = removeRowBoxIntersections(board);
+      const rowBoxCount = getPossiblesCount(rowBox);
+      const rowBoxDiff = start - rowBoxCount;
+
+      const columnBox = removeColumnBoxIntersections(board);
+      const columnBoxCount = getPossiblesCount(columnBox);
+      const columnBoxDiff = start - columnBoxCount;
+
+      const max = Math.max(rowBoxDiff, columnBoxDiff);
+
+      if (max > 0) {
+        hasChanged = true;
+
+        if (max === rowBoxDiff) {
+          board = rowBox;
+          steps = [...steps, getSolveStep('i', 'r', rowBoxCount, rowBoxDiff)];
+        } else if (max === columnBoxDiff) {
+          board = columnBox;
+          steps = [...steps, getSolveStep('i', 'c', columnBoxCount, columnBoxDiff)];
+        }
+      }
     }
   }
 
-  console.log('TIME', Date.now() - begin);
   return steps;
 }
 
-function getSolveStep(stepLetter, typeLetter, total, removed) {
-  const steps = {
+function getSolveStep(typeLetter, sectionLetter, total, removed) {
+  const types = {
     p: 'possibles',
     u: 'uniques',
     i: 'intersections',
   };
-  const types = {
+  const sections = {
     r: 'row',
-    c: 'column',
+    c: 'col',
     b: 'box',
   };
-  const step = steps[stepLetter];
   const type = types[typeLetter];
+  const section = sections[sectionLetter];
   const remaining = total - 81;
 
   return {
-    step,
     type,
+    section,
     removed,
     remaining,
   };
+}
+
+export function displaySolveData(steps) {
+  return steps.reduce((out, step) => {
+    const remaning = `${step.remaining}`.padStart(3);
+    const removed = `${step.removed}`.padStart(3);
+    const type = `${step.type}`.padStart(3);
+    const name = `${step.step}`.padStart(13);
+    return out + `${remaning} ${removed} ${type} ${name}\n`;
+  }, '');
+}
+
+export function getBoardScore(steps) {
+  if (steps.length === 0) {
+    return 0;
+  }
+
+  const lastStep = steps[steps.length - 1];
+  const isSolved = lastStep.remaining === 0;
+  const nonPossible = steps.findIndex((step) => step.type != 'possibles');
+  const isAllPossible = nonPossible < 0;
+  console.log('NP', isSolved, isAllPossible ? 'POS' : nonPossible, steps.length);
+  return steps.length;
 }

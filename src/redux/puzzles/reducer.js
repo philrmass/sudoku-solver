@@ -3,11 +3,13 @@ import { parsePuzzles } from '../../utilities/puzzles';
 
 import {
   solve,
-  getAveragePossibles,
+  getPossiblesCount,
+  getSolveSteps,
+  getBoardScore,
 } from '../../utilities/board';
 import {
   getPuzzleBoard,
-  getSolvedSummary,
+  //getSolvedSummary,
 } from '../../utilities/puzzles';
 
 import {
@@ -33,14 +35,19 @@ export default function puzzlesReducer(state = defaultState, action) {
       const solved = state.unsolved.map((puzzle) => {
         const board = getPuzzleBoard(puzzle);
         const cells = solve(board);
-        const average = getAveragePossibles(cells);
+        const remaining = getPossiblesCount(cells) - 81;
+        const steps = getSolveSteps(board);
+        const score = getBoardScore(steps);
+
         return {
           ...puzzle,
           cells,
-          average,
+          remaining,
+          steps,
+          score,
         };
       });
-      console.log(getSolvedSummary(solved));
+      //console.log(getSolvedSummary(solved));
       return {
         ...state,
         solved,
