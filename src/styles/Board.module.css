@@ -1,10 +1,14 @@
 .main {
   background: white;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  border: 2px solid var(--border-light);
+  display: inline-block;
+  border: 2px solid var(--border-dark);
 }
 
 .invalid {
   border: 2px solid var(--text-removeable);
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }

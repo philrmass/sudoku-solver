@@ -1,5 +1,12 @@
 .main {
+  width: calc(9 * var(--cell-size) + 16px);
   padding-top: var(--space2);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.section {
+  margin: 0 var(--space2) var(--space1) 0;
 }
 
 .title {
@@ -8,6 +15,7 @@
 
 .button {
   position: relative;
+  margin-right: var(--space0);
 }
 
 .badge {

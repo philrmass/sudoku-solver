@@ -1,7 +1,8 @@
 .main {
+  box-sizing: border-box;
   width: var(--cell-size);
   height: var(--cell-size);
-  border: 1px solid #c0c0c0;
+  border: 1px solid var(--border-light);
   display: flex;
   justify-content: center;
   align-items: center;

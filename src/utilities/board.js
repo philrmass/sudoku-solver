@@ -555,6 +555,10 @@ export function getBoardScore(steps) {
   const isSolved = lastStep.remaining === 0;
   const nonPossible = steps.findIndex((step) => step.type != 'possibles');
   const isAllPossible = nonPossible < 0;
-  console.log('NP', isSolved, isAllPossible ? 'POS' : nonPossible, steps.length);
+  const is = isSolved ? 'X' : '_' ;
+  const s = `${steps.length}`.padStart(2, ' ');
+  const ap = isAllPossible ? `[${s}]` : ` ${nonPossible} `.padStart(4, ' ');
+  const other = isAllPossible ? '' : `${steps.length - nonPossible}`.padStart(2, ' ');
+  console.log(`${is}  ${ap}  ${other}`);
   return steps.length;
 }

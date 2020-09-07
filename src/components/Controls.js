@@ -172,20 +172,27 @@ function Controls({
     return (
       <section className={styles.section}>
         <div className={styles.title}>
-          Solve
+          Puzzles
         </div>
         <div className={styles.buttons}>
           <button
+            className={styles.button}
             disabled={isSolved(board)}
             onClick={() => solveCurrent()}
           >
-            Current
+            Solve 
           </button>
-          <button onClick={() => solveAllPuzzles()}>
-            All
-          </button>
-          <button onClick={() => selectPuzzle(index)}>
+          <button
+            className={styles.button}
+            onClick={() => selectPuzzle(index)}
+          >
             Reset
+          </button>
+          <button
+            className={styles.button}
+            onClick={() => solveAllPuzzles()}
+          >
+            Solve All
           </button>
         </div>
       </section>

@@ -9,9 +9,10 @@
   --bg-removeable: #ffebe9;
   --bg-button: #585858;
   --bg-button-disabled: #d0d0d0;
-  --border-light: #585858;
+  --border-light: #c0c0c0;
+  --border-dark: #585858;
   --radius: 2px;
-  --cell-size: 60px;
+  --cell-size: 65px;
   --done-size: calc(.55 * var(--cell-size));
   --possible-size: calc(.35 * var(--done-size));
 }
@@ -37,7 +38,6 @@ body {
 button {
   padding: var(--space1) var(--space2);
   border-radius: var(--radius);
-  margin-right: var(--space0);
   background: var(--bg-button);
   color: var(--text-button);
 }
@@ -45,4 +45,17 @@ button {
 button:disabled {
   background: var(--bg-button-disabled);
   color: var(--text-disabled);
+}
+
+@media screen and (max-width: 650px) {
+  :root {
+    --cell-size: 10vw;
+  }
+}
+
+
+@media screen and (max-width: 300px) {
+  :root {
+    --cell-size: 30px;
+  }
 }

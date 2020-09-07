@@ -19,7 +19,9 @@ function Board({ board }) {
   
   return (
     <main className={`${styles.main} ${isValid ? '' : styles.invalid}`}>
-      {buildBoxes()}
+      <div className={styles.content}>
+        {buildBoxes()}
+      </div>
     </main>
   );
 }
