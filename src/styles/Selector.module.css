@@ -5,6 +5,21 @@
   align-items: center;
 }
 
+.current {
+  display: flex;
+  align-items: center;
+}
+
 .button {
-  font-family: monospace;
+  margin-right: var(--space0);
+}
+
+.score {
+  position: relative;
+  top: -0.4em;
+  padding: 1px 3px;
+  border-radius: 25%;
+  margin-left: var(--space0);
+  font-size: 0.8em;
+  background: var(--bg-button-disabled);
 }

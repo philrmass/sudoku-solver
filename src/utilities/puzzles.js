@@ -59,11 +59,13 @@ export function getPuzzleBoard(puzzle) {
 }
 
 export function getSolvedSummary(solved) {
-  console.log('SLVD', solved[0]);
   return solved.reduce((out, puzzle) => {
     const remaining = `${puzzle.remaining}`.padStart(3);
     const score = `${puzzle.score}`.padStart(3);
-    return out + `${puzzle.name}   ${remaining}  ${score}\n`;
+    if (remaining > 0) {
+      return out + `${puzzle.name}   ${remaining}  ${score}\n`;
+    }
+    return out;
   }, '');
 }
 

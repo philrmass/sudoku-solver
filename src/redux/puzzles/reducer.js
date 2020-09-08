@@ -9,7 +9,7 @@ import {
 } from '../../utilities/board';
 import {
   getPuzzleBoard,
-  //getSolvedSummary,
+  getSolvedSummary,
 } from '../../utilities/puzzles';
 
 import {
@@ -19,6 +19,7 @@ import {
 
 const defaultState = {
   index: 0,
+  score: 0,
   unsolved: parsePuzzles(puzzlesStr),
   solved: [],
 };
@@ -26,9 +27,14 @@ const defaultState = {
 export default function puzzlesReducer(state = defaultState, action) {
   switch(action.type) {
     case SELECT_PUZZLE: {
+      const puzzle = state.unsolved[action.index];
+      const board = getPuzzleBoard(puzzle);
+      const steps = getSolveSteps(board);
+      const score = getBoardScore(steps);
       return {
         ...state,
         index: action.index,
+        score,
       };
     }
     case SOLVE_ALL_PUZZLES: {
@@ -47,7 +53,7 @@ export default function puzzlesReducer(state = defaultState, action) {
           score,
         };
       });
-      //console.log(getSolvedSummary(solved));
+      console.log(getSolvedSummary(solved));
       return {
         ...state,
         solved,

@@ -553,12 +553,39 @@ export function getBoardScore(steps) {
 
   const lastStep = steps[steps.length - 1];
   const isSolved = lastStep.remaining === 0;
-  const nonPossible = steps.findIndex((step) => step.type != 'possibles');
-  const isAllPossible = nonPossible < 0;
-  const is = isSolved ? 'X' : '_' ;
-  const s = `${steps.length}`.padStart(2, ' ');
-  const ap = isAllPossible ? `[${s}]` : ` ${nonPossible} `.padStart(4, ' ');
-  const other = isAllPossible ? '' : `${steps.length - nonPossible}`.padStart(2, ' ');
-  console.log(`${is}  ${ap}  ${other}`);
-  return steps.length;
+
+  if (!isSolved) {
+    const left = lastStep.remaining - 72;
+    const part = Math.round(25 * (left / 71));
+    return 75 + part;
+  }
+
+  const intersectionsCount = getTypeCount(steps, 'intersections');
+  const uniquesCount = getTypeCount(steps, 'uniques');
+  const possiblesCount = getTypeCount(steps, 'possibles');
+
+  if (intersectionsCount > 0) {
+    const i = 10 * intersectionsCount;
+    const r = 100 * (uniquesCount / possiblesCount) - 10;
+    const part = Math.max(Math.min(Math.round(i + r), 25), 0);
+    return 50 + part;
+  }
+
+  if (uniquesCount > 0) {
+    const r = 100 * (uniquesCount / possiblesCount);
+    const part = Math.min(Math.round(r), 25);
+    return 25 + part;
+  }
+
+  const part = Math.round( 25 * ((possiblesCount - 5) / 20));
+  return part;
+}
+
+function getTypeCount(steps, type) {
+  return steps.reduce((count, step) => {
+    if (step.type === type) {
+      return count + 1;
+    }
+    return count;
+  }, 0);
 }
