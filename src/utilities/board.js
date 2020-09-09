@@ -540,8 +540,8 @@ export function displaySolveData(steps) {
   return steps.reduce((out, step) => {
     const remaning = `${step.remaining}`.padStart(3);
     const removed = `${step.removed}`.padStart(3);
-    const type = `${step.type}`.padStart(3);
-    const name = `${step.step}`.padStart(13);
+    const type = `${step.section}`.padStart(3);
+    const name = `${step.type}`.padStart(13);
     return out + `${remaning} ${removed} ${type} ${name}\n`;
   }, '');
 }
