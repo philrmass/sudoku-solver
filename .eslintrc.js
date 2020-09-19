@@ -19,21 +19,21 @@ module.exports = {
   'plugins': [
     'react',
   ],
-  'rules': {
-    'comma-dangle': ['warn', 'always-multiline'],
-    'comma-spacing': 'warn',
-    'key-spacing': 'warn',
-    'object-curly-spacing': ['warn', 'always'],
-    'indent': ['warn', 2, { 'SwitchCase': 1 }],
-    'linebreak-style': ['error', 'unix'],
-    'no-unused-vars': 'warn',
-    'quotes': ['error', 'single'],
-    'react/prop-types': 'warn',
-    'semi': ['warn', 'always'],
-  },
   'settings': {
     'react': {
       'version': 'detect',
     },
+  },
+  'rules': {
+    'comma-dangle': ['warn', 'always-multiline'],
+    'comma-spacing': 'warn',
+    'key-spacing': 'warn',
+    'indent': ['warn', 2, { 'SwitchCase': 1 }],
+    'linebreak-style': ['error', 'unix'],
+    'no-unused-vars': 'warn',
+    'object-curly-spacing': ['warn', 'always'],
+    'quotes': ['error', 'single'],
+    'react/prop-types': 'warn',
+    'semi': ['warn', 'always'],
   },
 };
